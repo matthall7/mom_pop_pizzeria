@@ -26,6 +26,8 @@ public class Frame extends JFrame{
         JPanel adminLoginScreen = createAdminLoginScreen();
         JPanel customerHome = createCustomerHome();
         JPanel accountInfo = createAccountInfo();
+        JPanel addressInput = createAddressInput();
+        JPanel menuScreen = createMenuScreen();
 
         // Add screens to the main panel
         // ADD EACH SCREEN TO THE MAIN PANEL WITH A UNIQUE NAME
@@ -35,6 +37,8 @@ public class Frame extends JFrame{
         mainPanel.add(adminLoginScreen, "LOGIN_ADMIN");
         mainPanel.add(customerHome, "CUSTOMER_HOME");
         mainPanel.add(accountInfo, "ACCOUNT_INFO");
+        mainPanel.add(addressInput, "ADDRESS_INPUT");
+        mainPanel.add(menuScreen, "MENU");
 
         // Displays main panel
         add(mainPanel);
@@ -394,18 +398,21 @@ public class Frame extends JFrame{
         JButton deliveryButton = new JButton("Delivery");
         deliveryButton.setBounds(170, 280, 190, 70);
         deliveryButton.setFont(new Font("Arial", Font.PLAIN, 30));
+        deliveryButton.addActionListener(e -> cardLayout.show(mainPanel, "ADDRESS_INPUT"));
         panel.add(deliveryButton);
 
         // Adds the Pickup button on the screen.
         JButton pickupButton = new JButton("Pickup");
         pickupButton.setBounds(170, 380, 190, 70);
         pickupButton.setFont(new Font("Arial", Font.PLAIN, 30));
+        pickupButton.addActionListener(e -> cardLayout.show(mainPanel, "MENU"));
         panel.add(pickupButton);
 
         // Adds the In-Store button on the screen.
         JButton inStoreButton = new JButton("In-Store");
         inStoreButton.setBounds(600, 320, 190, 70);
         inStoreButton.setFont(new Font("Arial", Font.PLAIN, 30));
+        inStoreButton.addActionListener(e -> cardLayout.show(mainPanel, "MENU"));
         panel.add(inStoreButton);
 
         return panel;
@@ -553,6 +560,100 @@ public class Frame extends JFrame{
             }
         });
         panel.add(viewPastOrdersLink);
+
+        return panel;
+    }
+
+    private JPanel createAddressInput() {
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+
+        // Adds the red panel and text at the top of the screen.
+        JPanel redPanel = createRedBanner("Add an Address", true, true, false, "CUSTOMER_HOME");
+        redPanel.setBounds(0, 0, getWidth(), getHeight()/5);
+        panel.add(redPanel);
+
+        // Adds Address labels and text fields on the screen.
+        // Street
+        JLabel street = new JLabel("Street");
+        street.setFont(new Font("Arial", Font.PLAIN, 20));
+        street.setBounds(390, 70, 300, 200);
+        panel.add(street);
+        JTextField streetText = new JTextField();
+        streetText.setBounds(390, 187, 250, 50);
+        streetText.setFont(new Font("Arial", Font.PLAIN, 24));
+        panel.add(streetText);
+        // City
+        JLabel city = new JLabel("City");
+        city.setFont(new Font("Arial", Font.PLAIN, 20));
+        city.setBounds(390, 150, 300, 200);
+        panel.add(city);
+        JTextField cityText = new JTextField();
+        cityText.setBounds(390, 267, 250, 50);
+        cityText.setFont(new Font("Arial", Font.PLAIN, 24));
+        panel.add(cityText);
+        // State
+        JLabel state = new JLabel("State");
+        state.setFont(new Font("Arial", Font.PLAIN, 20));
+        state.setBounds(390, 230, 300, 200);
+        panel.add(state);
+        JTextField stateText = new JTextField();
+        stateText.setBounds(390, 347, 250, 50);
+        stateText.setFont(new Font("Arial", Font.PLAIN, 24));
+        panel.add(stateText);
+        // Zipcode
+        JLabel zipcode = new JLabel("Zipcode");
+        zipcode.setFont(new Font("Arial", Font.PLAIN, 20));
+        zipcode.setBounds(390, 310, 300, 200);
+        panel.add(zipcode);
+        JTextField zipcodeText = new JTextField();
+        zipcodeText.setBounds(390, 427, 250, 50);
+        zipcodeText.setFont(new Font("Arial", Font.PLAIN, 24));
+        panel.add(zipcodeText);
+
+        // Adds the Continue button to create the account.
+        JButton continueButton = new JButton("Continue");
+        continueButton.setBounds(getWidth()/2-80, 500, 190, 70);
+        continueButton.setFont(new Font("Arial", Font.PLAIN, 30));
+        continueButton.addActionListener(e -> cardLayout.show(mainPanel, "MENU"));
+        panel.add(continueButton);
+
+        return panel;
+    }
+
+    private JPanel createMenuScreen() {
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+
+        // Adds the red panel and text at the top of the screen.
+        JPanel redPanel = createRedBanner("Explore the Menu", true, true, true, "ADDRESS_INPUT");
+        redPanel.setBounds(0, 0, getWidth(), getHeight()/5);
+        panel.add(redPanel);
+
+        // Creates the tabbed pane that switches between the different menu types. The default is the Pizza Menu.
+        JTabbedPane menu = new JTabbedPane();
+
+        // Pizza Menu
+        JPanel pizzaMenu = new JPanel();
+        // add code
+        menu.add(pizzaMenu);
+
+        // Sides Menu
+        JPanel sidesMenu = new JPanel();
+        // add code
+        menu.add(sidesMenu);
+
+        // Drinks Menu
+        JPanel drinksMenu = new JPanel();
+        // add code
+        menu.add(drinksMenu);
+
+        // Dessert Menu
+        JPanel dessertMenu = new JPanel();
+        // add code
+        menu.add(dessertMenu);
+
+        panel.add(menu);
 
         return panel;
     }
