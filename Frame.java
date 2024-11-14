@@ -2,10 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 public class Frame extends JFrame{
     private final CardLayout cardLayout;
     private final JPanel mainPanel;
+    private Customer customer;
 
     Frame() {
         // Sets up the frame
@@ -149,7 +152,7 @@ public class Frame extends JFrame{
 
         // Adds the combo box that switches the page from the customer to admin login screen
         String[] loginTypes = {"Customer", "Admin"};
-        JComboBox loginTypeBox = new JComboBox(loginTypes);
+        JComboBox<String> loginTypeBox = new JComboBox<>(loginTypes);
         loginTypeBox.setSelectedIndex(0);
         loginTypeBox.setBounds(getWidth()/2-100, 150, 200, 50);
         loginTypeBox.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -372,7 +375,20 @@ public class Frame extends JFrame{
         createButton.setBounds(getWidth()/2-65, 500, 130, 70);
         createButton.setFont(new Font("Arial", Font.PLAIN, 30));
         createButton.addActionListener(e -> {
-            //create account
+            if(!streetText.getText().isEmpty() && !cardNumberText.getText().isEmpty()) {
+                customer = new Customer(phoneNumberText.getText(), nameText.getText(), streetText.getText(),
+                         cityText.getText(), zipcodeText.getText(), cardNumberText.getText(), expirationDateText.getText(),
+                        securityCodeText.getText());
+            } else {
+                customer = new Customer(phoneNumberText.getText(), nameText.getText());
+            }
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("Customer Database.txt"));
+                //writer.write("Customer\nPhone Number: "+ );
+            } catch(Exception exception) {
+                System.out.println(exception.getMessage());
+            }
+            cardLayout.show(mainPanel, "LOGIN_CUSTOMER");
         });
         panel.add(createButton);
         JLabel required = new JLabel("* Required");
@@ -725,11 +741,183 @@ public class Frame extends JFrame{
         });
         menuLabels.add(dessertLabel);
 
+        // Adds the labels and radio buttons for the crust options
+        JLabel crustText = new JLabel("<html><u>Crust</u><html>");
+        crustText.setFont(new Font("Arial", Font.PLAIN, 30));
+        crustText.setBounds(50, 250, 100, 50);
+        panel.add(crustText);
+
+        JLabel thinCrust = new JLabel("Thin");
+        thinCrust.setFont(new Font("Arial", Font.PLAIN, 30));
+        thinCrust.setBounds(25, 325, 120, 50);
+        thinCrust.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        panel.add(thinCrust);
+        JRadioButton thinCrustButton = new JRadioButton();
+        thinCrustButton.setBounds(165, 335, 30, 30);
+        thinCrustButton.setBackground(Color.WHITE);
+        panel.add(thinCrustButton);
+
+        JLabel regularCrust = new JLabel("Regular");
+        regularCrust.setFont(new Font("Arial", Font.PLAIN, 30));
+        regularCrust.setBounds(25, 400, 120, 50);
+        regularCrust.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        panel.add(regularCrust);
+        JRadioButton regularCrustButton = new JRadioButton();
+        regularCrustButton.setBounds(165, 410, 25, 25);
+        regularCrustButton.setBackground(Color.WHITE);
+        panel.add(regularCrustButton);
+
+        JLabel panCrust = new JLabel("Pan");
+        panCrust.setFont(new Font("Arial", Font.PLAIN, 30));
+        panCrust.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        panCrust.setBounds(25, 475, 120, 50);
+        panel.add(panCrust);
+        JRadioButton panCrustButton = new JRadioButton();
+        panCrustButton.setBounds(165, 485, 25, 25);
+        panCrustButton.setBackground(Color.WHITE);
+        panel.add(panCrustButton);
+
+        ButtonGroup crustGroup = new ButtonGroup();
+        crustGroup.add(thinCrustButton);
+        crustGroup.add(regularCrustButton);
+        crustGroup.add(panCrustButton);
+
+        // Adds the labels and radio buttons for the pizza sizes
+        JLabel sizeText = new JLabel("<html><u>Size</u><html>");
+        sizeText.setFont(new Font("Arial", Font.PLAIN, 30));
+        sizeText.setBounds(340, 250, 100, 50);
+        panel.add(sizeText);
+
+        JLabel smallSize = new JLabel("Small $5.00");
+        smallSize.setFont(new Font("Arial", Font.PLAIN, 30));
+        smallSize.setBounds(225, 305, 280, 50);
+        smallSize.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        panel.add(smallSize);
+        JRadioButton smallSizeButton = new JRadioButton();
+        smallSizeButton.setBounds(525, 315, 30, 30);
+        smallSizeButton.setBackground(Color.WHITE);
+        panel.add(smallSizeButton);
+
+        JLabel mediumSize = new JLabel("Medium $7.00");
+        mediumSize.setFont(new Font("Arial", Font.PLAIN, 30));
+        mediumSize.setBounds(225, 365, 280, 50);
+        mediumSize.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        panel.add(mediumSize);
+        JRadioButton mediumSizeButton = new JRadioButton();
+        mediumSizeButton.setBounds(525, 375, 25, 25);
+        mediumSizeButton.setBackground(Color.WHITE);
+        panel.add(mediumSizeButton);
+
+        JLabel largeSize = new JLabel("Large $9.00");
+        largeSize.setFont(new Font("Arial", Font.PLAIN, 30));
+        largeSize.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        largeSize.setBounds(225, 425, 280, 50);
+        panel.add(largeSize);
+        JRadioButton largeSizeButton = new JRadioButton();
+        largeSizeButton.setBounds(525, 435, 25, 25);
+        largeSizeButton.setBackground(Color.WHITE);
+        panel.add(largeSizeButton);
+
+        JLabel extraLargeSize = new JLabel("Extra Large $12.00");
+        extraLargeSize.setFont(new Font("Arial", Font.PLAIN, 30));
+        extraLargeSize.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        extraLargeSize.setBounds(225, 485, 280, 50);
+        panel.add(extraLargeSize);
+        JRadioButton extraLargeSizeButton = new JRadioButton();
+        extraLargeSizeButton.setBounds(525, 495, 25, 25);
+        extraLargeSizeButton.setBackground(Color.WHITE);
+        panel.add(extraLargeSizeButton);
+
+        ButtonGroup sizeGroup = new ButtonGroup();
+        sizeGroup.add(smallSizeButton);
+        sizeGroup.add(mediumSizeButton);
+        sizeGroup.add(largeSizeButton);
+        sizeGroup.add(extraLargeSizeButton);
+
+        // Adds the toppings label and the panels that show each topping.
+        JLabel toppingsText = new JLabel("<html><u>Toppings *</u><html>");
+        toppingsText.setFont(new Font("Arial", Font.PLAIN, 30));
+        toppingsText.setBounds(700, 250, 150, 50);
+        panel.add(toppingsText);
+
+        JPanel cheesePanel = new JPanel();
+        cheesePanel.setLayout(null);
+        cheesePanel.setBounds(600, 300, 110, 70);
+        panel.add(cheesePanel);
+        JPanel hamPanel = new JPanel();
+        hamPanel.setLayout(null);
+        hamPanel.setBounds(725, 300, 110, 70);
+        panel.add(hamPanel);
+        JPanel tomatoPanel = new JPanel();
+        tomatoPanel.setLayout(null);
+        tomatoPanel.setBounds(850, 300, 110, 70);
+        panel.add(tomatoPanel);
+
+        JPanel pepperoniPanel = new JPanel();
+        pepperoniPanel.setLayout(null);
+        pepperoniPanel.setBounds(600, 380, 110, 70);
+        panel.add(pepperoniPanel);
+        JPanel greenPepperPanel = new JPanel();
+        greenPepperPanel.setLayout(null);
+        greenPepperPanel.setBounds(725, 380, 110, 70);
+        panel.add(greenPepperPanel);
+        JPanel mushroomPanel = new JPanel();
+        mushroomPanel.setLayout(null);
+        mushroomPanel.setBounds(850, 380, 110, 70);
+        panel.add(mushroomPanel);
+
+        JPanel sausagePanel = new JPanel();
+        sausagePanel.setLayout(null);
+        sausagePanel.setBounds(600, 460, 110, 70);
+        panel.add(sausagePanel);
+        JPanel onionPanel = new JPanel();
+        onionPanel.setLayout(null);
+        onionPanel.setBounds(725, 460, 110, 70);
+        panel.add(onionPanel);
+        JPanel pineapplePanel = new JPanel();
+        pineapplePanel.setLayout(null);
+        pineapplePanel.setBounds(850, 460, 110, 70);
+        panel.add(pineapplePanel);
+
+        // Adds the label at the bottom of the screen about topping prices
+        JLabel toppingsPrice = new JLabel("*Extra topping prices vary on pizza size ($0.72, $1.00, $1.25, $1.50)");
+        toppingsPrice.setFont(new Font("Arial", Font.PLAIN, 20));
+        toppingsPrice.setBounds(20, 550, 610, 50);
+        panel.add(toppingsPrice);
+
+        // Adds the cart button.
         JButton cartButton = new JButton("Cart");
         cartButton.setFont(new Font("Arial", Font.PLAIN, 30));
         cartButton.setBounds(780, 155, 110, 60);
         cartButton.setBackground(new Color(0xeeeeee));
         cartButton.addActionListener(e -> cardLayout.show(mainPanel, "CART"));
+
+        // Adds the Add to Cart button.
+        JButton addToCartButton = new JButton("Add to Cart");
+        addToCartButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        addToCartButton.setBounds(800, 550, 165, 50);
+        addToCartButton.setBackground(new Color(0xeeeeee));
+        //addToCartButton.addActionListener(e -> ));
+        panel.add(addToCartButton);
+
+        // Adds the counter at the bottom for how many pizzas are ordered
+        int pizzaCounter = 1;
+        JLabel count = new JLabel(pizzaCounter+"");
+        count.setFont(new Font("Arial", Font.PLAIN, 25));
+        count.setBounds(700, 550, 50, 50);
+        panel.add(count);
+        JButton leftButton = new JButton("<");
+        leftButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        leftButton.setBounds(635, 550, 50, 50);
+        leftButton.setBackground(new Color(0xeeeeee));
+        //leftButton.addActionListener(e -> count.setText(pizzaCounter-- + ""));
+        panel.add(leftButton);
+        JButton rightButton = new JButton(">");
+        rightButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        rightButton.setBounds(735, 550, 50, 50);
+        rightButton.setBackground(new Color(0xeeeeee));
+        //rightButton.addActionListener(e -> pizzaCounter++);
+        panel.add(rightButton);
 
         panel.add(cartButton);
         panel.add(menuLabels);
@@ -843,12 +1031,203 @@ public class Frame extends JFrame{
         panel.setBackground(Color.WHITE);
         panel.setLayout(null);
 
+        // Adds the red panel and text at the top of the screen.
+        JPanel redPanel = createRedBanner("Explore the Menu", true, true, false, "CUSTOMER_HOME");
+        redPanel.setBounds(0, 0, getWidth(), getHeight()/5);
+        panel.add(redPanel);
+
+        // Panel with each type of menu labeled on it; to be added to every menu.
+        JPanel menuLabels = new JPanel();
+        menuLabels.setLayout(null);
+        menuLabels.setBackground(new Color(0xeeeeee));
+        menuLabels.setBorder(BorderFactory.createLineBorder(Color.black));
+        menuLabels.setBounds(50, 150, 635, 75);
+        // Pizza
+        JLabel pizzaLabel = new JLabel("Pizza");
+        pizzaLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+        pizzaLabel.setBounds(25, 25, 85, 30);
+        pizzaLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                pizzaLabel.setFont(new Font("Arial", Font.BOLD, 30));
+            }
+        });
+        pizzaLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                pizzaLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+            }
+        });
+        pizzaLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cardLayout.show(mainPanel, "PIZZA_MENU");
+            }
+        });
+        menuLabels.add(pizzaLabel);
+        // Sides
+        JLabel sidesLabel = new JLabel("Sides");
+        sidesLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+        sidesLabel.setBounds(175, 15, 90, 50);
+        sidesLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                sidesLabel.setFont(new Font("Arial", Font.BOLD, 30));
+            }
+        });
+        sidesLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                sidesLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+            }
+        });
+        sidesLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cardLayout.show(mainPanel, "SIDES_MENU");
+            }
+        });
+        menuLabels.add(sidesLabel);
+        // Drinks
+        JLabel drinksLabel = new JLabel("Drinks");
+        drinksLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        drinksLabel.setBounds(325, 15, 95, 50);
+        menuLabels.add(drinksLabel);
+        // Dessert
+        JLabel dessertLabel = new JLabel("Dessert");
+        dessertLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+        dessertLabel.setBounds(490, 25, 115, 30);
+        dessertLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                dessertLabel.setFont(new Font("Arial", Font.BOLD, 30));
+            }
+        });
+        dessertLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                dessertLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+            }
+        });
+        dessertLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cardLayout.show(mainPanel, "DESSERT_MENU");
+            }
+        });
+        menuLabels.add(dessertLabel);
+
+        JButton cartButton = new JButton("Cart");
+        cartButton.setFont(new Font("Arial", Font.PLAIN, 30));
+        cartButton.setBounds(780, 155, 110, 60);
+        cartButton.setBackground(new Color(0xeeeeee));
+        cartButton.addActionListener(e -> cardLayout.show(mainPanel, "CART"));
+
+        panel.add(cartButton);
+        panel.add(menuLabels);
+
         return panel;
     }
     private JPanel createDessertMenu() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
         panel.setLayout(null);
+
+        // Adds the red panel and text at the top of the screen.
+        JPanel redPanel = createRedBanner("Explore the Menu", true, true, false, "CUSTOMER_HOME");
+        redPanel.setBounds(0, 0, getWidth(), getHeight()/5);
+        panel.add(redPanel);
+
+        // Panel with each type of menu labeled on it; to be added to every menu.
+        JPanel menuLabels = new JPanel();
+        menuLabels.setLayout(null);
+        menuLabels.setBackground(new Color(0xeeeeee));
+        menuLabels.setBorder(BorderFactory.createLineBorder(Color.black));
+        menuLabels.setBounds(50, 150, 635, 75);
+        // Pizza
+        JLabel pizzaLabel = new JLabel("Pizza");
+        pizzaLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+        pizzaLabel.setBounds(25, 25, 85, 30);
+        pizzaLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                pizzaLabel.setFont(new Font("Arial", Font.BOLD, 30));
+            }
+        });
+        pizzaLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                pizzaLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+            }
+        });
+        pizzaLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cardLayout.show(mainPanel, "PIZZA_MENU");
+            }
+        });
+        menuLabels.add(pizzaLabel);
+        // Sides
+        JLabel sidesLabel = new JLabel("Sides");
+        sidesLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+        sidesLabel.setBounds(175, 15, 90, 50);
+        sidesLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                sidesLabel.setFont(new Font("Arial", Font.BOLD, 30));
+            }
+        });
+        sidesLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                sidesLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+            }
+        });
+        sidesLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cardLayout.show(mainPanel, "SIDES_MENU");
+            }
+        });
+        menuLabels.add(sidesLabel);
+        // Drinks
+        JLabel drinksLabel = new JLabel("Drinks");
+        drinksLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+        drinksLabel.setBounds(325, 25, 95, 30);
+        drinksLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                drinksLabel.setFont(new Font("Arial", Font.BOLD, 30));
+            }
+        });
+        drinksLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                drinksLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+            }
+        });
+        drinksLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cardLayout.show(mainPanel, "DRINKS_MENU");
+            }
+        });
+        menuLabels.add(drinksLabel);
+        // Dessert
+        JLabel dessertLabel = new JLabel("Dessert");
+        dessertLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        dessertLabel.setBounds(490, 15, 115, 50);
+        menuLabels.add(dessertLabel);
+
+        JButton cartButton = new JButton("Cart");
+        cartButton.setFont(new Font("Arial", Font.PLAIN, 30));
+        cartButton.setBounds(780, 155, 110, 60);
+        cartButton.setBackground(new Color(0xeeeeee));
+        cartButton.addActionListener(e -> cardLayout.show(mainPanel, "CART"));
+
+        panel.add(cartButton);
+        panel.add(menuLabels);
+
 
         return panel;
     }
