@@ -4,6 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 
 public class Frame extends JFrame{
     private final CardLayout cardLayout;
@@ -377,17 +378,22 @@ public class Frame extends JFrame{
         createButton.addActionListener(e -> {
             if(!streetText.getText().isEmpty() && !cardNumberText.getText().isEmpty()) {
                 customer = new Customer(phoneNumberText.getText(), nameText.getText(), streetText.getText(),
-                         cityText.getText(), zipcodeText.getText(), cardNumberText.getText(), expirationDateText.getText(),
+                         cityText.getText(), stateText.getText(), zipcodeText.getText(), cardNumberText.getText(), expirationDateText.getText(),
                         securityCodeText.getText());
             } else {
                 customer = new Customer(phoneNumberText.getText(), nameText.getText());
             }
-            try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter("Customer Database.txt"));
-                //writer.write("Customer\nPhone Number: "+ );
-            } catch(Exception exception) {
-                System.out.println(exception.getMessage());
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("Customer Database.txt", true))) {
+                writer.write("Customer\nPhone Number: " + customer.getPhoneNumber() + "\n" +
+                        "Name: " + customer.getName() + "\nStreet: " + customer.getStreet() + "\n" +
+                        "City: " + customer.getCity() + "\nState: " + customer.getState() + "\n" +
+                        "\nZipcode: " + customer.getZipcode() + "\n" + "Card Number: " + customer.getCardNum() +
+                        "\nExpiration Date: " + customer.getExpDate() + "\n" + "CVV: " + customer.getCvv()+"\n");
+                writer.newLine();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
+
             cardLayout.show(mainPanel, "LOGIN_CUSTOMER");
         });
         panel.add(createButton);
@@ -611,6 +617,9 @@ public class Frame extends JFrame{
         JTextField streetText = new JTextField();
         streetText.setBounds(390, 187, 250, 50);
         streetText.setFont(new Font("Arial", Font.PLAIN, 24));
+        if(null != customer.getStreet()) {
+            streetText.setText(customer.getStreet());
+        }
         panel.add(streetText);
         // City
         JLabel city = new JLabel("City");
@@ -620,6 +629,9 @@ public class Frame extends JFrame{
         JTextField cityText = new JTextField();
         cityText.setBounds(390, 267, 250, 50);
         cityText.setFont(new Font("Arial", Font.PLAIN, 24));
+        if(null != customer.getCity()) {
+            cityText.setText(customer.getCity());
+        }
         panel.add(cityText);
         // State
         JLabel state = new JLabel("State");
@@ -629,6 +641,9 @@ public class Frame extends JFrame{
         JTextField stateText = new JTextField();
         stateText.setBounds(390, 347, 250, 50);
         stateText.setFont(new Font("Arial", Font.PLAIN, 24));
+        if(null != customer.getState()) {
+            stateText.setText(customer.getState());
+        }
         panel.add(stateText);
         // Zipcode
         JLabel zipcode = new JLabel("Zipcode");
@@ -638,13 +653,32 @@ public class Frame extends JFrame{
         JTextField zipcodeText = new JTextField();
         zipcodeText.setBounds(390, 427, 250, 50);
         zipcodeText.setFont(new Font("Arial", Font.PLAIN, 24));
+        if(null != customer.getZipcode()) {
+            zipcodeText.setText(customer.getZipcode());
+        }
         panel.add(zipcodeText);
 
         // Adds the Continue button to create the account.
         JButton continueButton = new JButton("Continue");
         continueButton.setBounds(getWidth()/2-80, 500, 190, 70);
         continueButton.setFont(new Font("Arial", Font.PLAIN, 30));
-        continueButton.addActionListener(e -> cardLayout.show(mainPanel, "PIZZA_MENU"));
+        continueButton.addActionListener(e -> {
+            customer.setStreet(streetText.getText());
+            customer.setCity(cityText.getText());
+            customer.setState(stateText.getText());
+            customer.setZipcode(zipcodeText.getText());
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("Customer Database.txt", true))) {
+                writer.write("Customer\nPhone Number: " + customer.getPhoneNumber() + "\n" +
+                        "Name: " + customer.getName() + "\nStreet: " + customer.getStreet() + "\n" +
+                        "City: " + customer.getCity() + "\nState: " + customer.getState() + "\n" +
+                        "\nZipcode: " + customer.getZipcode() + "\n" + "Card Number: " + customer.getCardNum() +
+                        "\nExpiration Date: " + customer.getExpDate() + "\n" + "CVV: " + customer.getCvv()+"\n");
+                writer.newLine();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            cardLayout.show(mainPanel, "PIZZA_MENU");
+        });
         panel.add(continueButton);
 
         return panel;
