@@ -2,14 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 
 public class Frame extends JFrame{
     private final CardLayout cardLayout;
     private final JPanel mainPanel;
     private Customer customer;
+    private final ArrayList<Item> cart = new ArrayList<>();
+    private int pizzaCounter = 1;
+    private File database = new File("Customer DataBase.txt");
 
     Frame() {
         // Sets up the frame
@@ -207,7 +209,28 @@ public class Frame extends JFrame{
         loginButton.setBounds(getWidth()/2-65, 500, 130, 70);
         loginButton.setFont(new Font("Arial", Font.PLAIN, 30));
         loginButton.addActionListener(e -> {
-            // NEEDS TO BE CHANGE TO ONLY ALLOW IF CUSTOMER HAS ENTERED CORRECT PHONE NUMBER
+            /*try (BufferedReader br = new BufferedReader(new FileReader(database))) {
+                String line;
+                // Read the file line by line
+                while ((line = br.readLine()) != null) {
+                    String[] data = line.split("\\|");
+                    if(data[0].equals(phoneNumberText.getText()))
+                    {
+                        if(data.length == 2)
+                        {
+                            customer = new Customer(data[0], data[1]);
+                        }
+                        else{
+                            customer = new Customer(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8]);
+                        }
+                        cardLayout.show(mainPanel, "CUSTOMER_HOME");
+                    }
+                    // TODO: make it appear on screen
+                    System.out.println("Account not found");
+                }
+            } catch (IOException f) {
+                f.printStackTrace();
+            }*/
             cardLayout.show(mainPanel, "CUSTOMER_HOME");
         });
 
@@ -378,20 +401,20 @@ public class Frame extends JFrame{
         createButton.addActionListener(e -> {
             if(!streetText.getText().isEmpty() && !cardNumberText.getText().isEmpty()) {
                 customer = new Customer(phoneNumberText.getText(), nameText.getText(), streetText.getText(),
-                         cityText.getText(), stateText.getText(), zipcodeText.getText(), cardNumberText.getText(), expirationDateText.getText(),
+                        cityText.getText(), stateText.getText(), zipcodeText.getText(), cardNumberText.getText(), expirationDateText.getText(),
                         securityCodeText.getText());
             } else {
                 customer = new Customer(phoneNumberText.getText(), nameText.getText());
             }
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("Customer Database.txt", true))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(database, true))) {
                 writer.write("Customer\nPhone Number: " + customer.getPhoneNumber() + "\n" +
                         "Name: " + customer.getName() + "\nStreet: " + customer.getStreet() + "\n" +
                         "City: " + customer.getCity() + "\nState: " + customer.getState() + "\n" +
-                        "\nZipcode: " + customer.getZipcode() + "\n" + "Card Number: " + customer.getCardNum() +
+                        "Zipcode: " + customer.getZipcode() + "\n" + "Card Number: " + customer.getCardNum() +
                         "\nExpiration Date: " + customer.getExpDate() + "\n" + "CVV: " + customer.getCvv()+"\n");
                 writer.newLine();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                System.out.println(ex.getMessage());
             }
 
             cardLayout.show(mainPanel, "LOGIN_CUSTOMER");
@@ -617,9 +640,9 @@ public class Frame extends JFrame{
         JTextField streetText = new JTextField();
         streetText.setBounds(390, 187, 250, 50);
         streetText.setFont(new Font("Arial", Font.PLAIN, 24));
-        if(null != customer.getStreet()) {
+        /*if(null != customer.getStreet()) {
             streetText.setText(customer.getStreet());
-        }
+        }*/
         panel.add(streetText);
         // City
         JLabel city = new JLabel("City");
@@ -629,9 +652,9 @@ public class Frame extends JFrame{
         JTextField cityText = new JTextField();
         cityText.setBounds(390, 267, 250, 50);
         cityText.setFont(new Font("Arial", Font.PLAIN, 24));
-        if(null != customer.getCity()) {
+        /*if(null != customer.getCity()) {
             cityText.setText(customer.getCity());
-        }
+        }*/
         panel.add(cityText);
         // State
         JLabel state = new JLabel("State");
@@ -641,9 +664,9 @@ public class Frame extends JFrame{
         JTextField stateText = new JTextField();
         stateText.setBounds(390, 347, 250, 50);
         stateText.setFont(new Font("Arial", Font.PLAIN, 24));
-        if(null != customer.getState()) {
+        /*if(null != customer.getState()) {
             stateText.setText(customer.getState());
-        }
+        }*/
         panel.add(stateText);
         // Zipcode
         JLabel zipcode = new JLabel("Zipcode");
@@ -653,9 +676,9 @@ public class Frame extends JFrame{
         JTextField zipcodeText = new JTextField();
         zipcodeText.setBounds(390, 427, 250, 50);
         zipcodeText.setFont(new Font("Arial", Font.PLAIN, 24));
-        if(null != customer.getZipcode()) {
+        /*if(null != customer.getZipcode()) {
             zipcodeText.setText(customer.getZipcode());
-        }
+        }*/
         panel.add(zipcodeText);
 
         // Adds the Continue button to create the account.
@@ -667,7 +690,7 @@ public class Frame extends JFrame{
             customer.setCity(cityText.getText());
             customer.setState(stateText.getText());
             customer.setZipcode(zipcodeText.getText());
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("Customer Database.txt", true))) {
+            /*try (BufferedWriter writer = new BufferedWriter(new FileWriter("Customer Database.txt", true))) {
                 writer.write("Customer\nPhone Number: " + customer.getPhoneNumber() + "\n" +
                         "Name: " + customer.getName() + "\nStreet: " + customer.getStreet() + "\n" +
                         "City: " + customer.getCity() + "\nState: " + customer.getState() + "\n" +
@@ -675,8 +698,8 @@ public class Frame extends JFrame{
                         "\nExpiration Date: " + customer.getExpDate() + "\n" + "CVV: " + customer.getCvv()+"\n");
                 writer.newLine();
             } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+                System.out.println(ex.getMessage());
+            }*/
             cardLayout.show(mainPanel, "PIZZA_MENU");
         });
         panel.add(continueButton);
@@ -877,40 +900,247 @@ public class Frame extends JFrame{
         JPanel cheesePanel = new JPanel();
         cheesePanel.setLayout(null);
         cheesePanel.setBounds(600, 300, 110, 70);
+        JLabel cheeseLabel = new JLabel("Cheese");
+        cheeseLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        cheeseLabel.setBounds(20, 5, 110, 60);
+        cheesePanel.add(cheeseLabel);
+        cheesePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                cheesePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+        });
+        cheesePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                cheesePanel.setBorder(null);
+            }
+        });
+        cheesePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cheeseLabel.setFont(new Font("Arial", Font.BOLD, 20));
+                cheesePanel.validate();
+            }
+        });
         panel.add(cheesePanel);
         JPanel hamPanel = new JPanel();
         hamPanel.setLayout(null);
         hamPanel.setBounds(725, 300, 110, 70);
+        JLabel hamLabel = new JLabel("Ham");
+        hamLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        hamLabel.setBounds(23, 5, 110, 60);
+        hamPanel.add(hamLabel);
+        hamPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hamPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+        });
+        hamPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                hamPanel.setBorder(null);
+            }
+        });
+        hamPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                hamLabel.setFont(new Font("Arial", Font.BOLD, 20));
+                hamPanel.validate();
+            }
+        });
         panel.add(hamPanel);
         JPanel tomatoPanel = new JPanel();
         tomatoPanel.setLayout(null);
         tomatoPanel.setBounds(850, 300, 110, 70);
+        JLabel tomatoLabel = new JLabel("Tomato");
+        tomatoLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        tomatoLabel.setBounds(20, 5, 110, 60);
+        tomatoPanel.add(tomatoLabel);
+        tomatoPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                tomatoPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+        });
+        tomatoPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                tomatoPanel.setBorder(null);
+            }
+        });
+        tomatoPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                tomatoLabel.setFont(new Font("Arial", Font.BOLD, 20));
+                tomatoPanel.validate();
+            }
+        });
         panel.add(tomatoPanel);
 
         JPanel pepperoniPanel = new JPanel();
         pepperoniPanel.setLayout(null);
         pepperoniPanel.setBounds(600, 380, 110, 70);
+        JLabel pepperoniLabel = new JLabel("Pepperoni");
+        pepperoniLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        pepperoniLabel.setBounds(9, 5, 110, 60);
+        pepperoniPanel.add(pepperoniLabel);
+        pepperoniPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                pepperoniPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+        });
+        pepperoniPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                pepperoniPanel.setBorder(null);
+            }
+        });
+        pepperoniPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                pepperoniLabel.setFont(new Font("Arial", Font.BOLD, 20));
+                pepperoniPanel.validate();
+            }
+        });
         panel.add(pepperoniPanel);
         JPanel greenPepperPanel = new JPanel();
         greenPepperPanel.setLayout(null);
         greenPepperPanel.setBounds(725, 380, 110, 70);
+        JLabel greenPepperLabel = new JLabel("<html>Green<br/>Pepper<html>");
+        greenPepperLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        greenPepperLabel.setBounds(18, 5, 110, 60);
+        greenPepperPanel.add(greenPepperLabel);
+        greenPepperPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                greenPepperPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+        });
+        greenPepperPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                greenPepperPanel.setBorder(null);
+            }
+        });
+        greenPepperPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                greenPepperLabel.setFont(new Font("Arial", Font.BOLD, 20));
+                greenPepperPanel.validate();
+            }
+        });
         panel.add(greenPepperPanel);
         JPanel mushroomPanel = new JPanel();
         mushroomPanel.setLayout(null);
         mushroomPanel.setBounds(850, 380, 110, 70);
+        JLabel mushroomLabel = new JLabel("Mushroom");
+        mushroomLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        mushroomLabel.setBounds(9, 5, 110, 60);
+        mushroomPanel.add(mushroomLabel);
+        mushroomPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                mushroomPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+        });
+        mushroomPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                mushroomPanel.setBorder(null);
+            }
+        });
+        mushroomPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mushroomLabel.setFont(new Font("Arial", Font.BOLD, 20));
+                mushroomPanel.validate();
+            }
+        });
         panel.add(mushroomPanel);
 
         JPanel sausagePanel = new JPanel();
         sausagePanel.setLayout(null);
         sausagePanel.setBounds(600, 460, 110, 70);
+        JLabel sausageLabel = new JLabel("Sausage");
+        sausageLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        sausageLabel.setBounds(16, 5, 110, 60);
+        sausagePanel.add(sausageLabel);
+        sausagePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                sausagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+        });
+        sausagePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                sausagePanel.setBorder(null);
+            }
+        });
+        sausagePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                sausageLabel.setFont(new Font("Arial", Font.BOLD, 20));
+                sausagePanel.validate();
+            }
+        });
         panel.add(sausagePanel);
         JPanel onionPanel = new JPanel();
         onionPanel.setLayout(null);
         onionPanel.setBounds(725, 460, 110, 70);
+        JLabel onionLabel = new JLabel("Onion");
+        onionLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        onionLabel.setBounds(20, 5, 110, 60);
+        onionPanel.add(onionLabel);
+        onionPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                onionPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+        });
+        onionPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                onionPanel.setBorder(null);
+            }
+        });
+        onionPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                onionLabel.setFont(new Font("Arial", Font.BOLD, 20));
+                onionPanel.validate();
+            }
+        });
         panel.add(onionPanel);
         JPanel pineapplePanel = new JPanel();
         pineapplePanel.setLayout(null);
         pineapplePanel.setBounds(850, 460, 110, 70);
+        JLabel pineappleLabel = new JLabel("Pineapple");
+        pineappleLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        pineappleLabel.setBounds(15, 5, 110, 60);
+        pineapplePanel.add(pineappleLabel);
+        pineapplePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                pineapplePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+        });
+        pineapplePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                pineapplePanel.setBorder(null);
+            }
+        });
+        pineapplePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                pineappleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+                pineapplePanel.validate();
+            }
+        });
         panel.add(pineapplePanel);
 
         // Adds the label at the bottom of the screen about topping prices
@@ -926,16 +1156,7 @@ public class Frame extends JFrame{
         cartButton.setBackground(new Color(0xeeeeee));
         cartButton.addActionListener(e -> cardLayout.show(mainPanel, "CART"));
 
-        // Adds the Add to Cart button.
-        JButton addToCartButton = new JButton("Add to Cart");
-        addToCartButton.setFont(new Font("Arial", Font.PLAIN, 25));
-        addToCartButton.setBounds(800, 550, 165, 50);
-        addToCartButton.setBackground(new Color(0xeeeeee));
-        //addToCartButton.addActionListener(e -> ));
-        panel.add(addToCartButton);
-
         // Adds the counter at the bottom for how many pizzas are ordered
-        int pizzaCounter = 1;
         JLabel count = new JLabel(pizzaCounter+"");
         count.setFont(new Font("Arial", Font.PLAIN, 25));
         count.setBounds(700, 550, 50, 50);
@@ -944,14 +1165,97 @@ public class Frame extends JFrame{
         leftButton.setFont(new Font("Arial", Font.PLAIN, 25));
         leftButton.setBounds(635, 550, 50, 50);
         leftButton.setBackground(new Color(0xeeeeee));
-        //leftButton.addActionListener(e -> count.setText(pizzaCounter-- + ""));
+        leftButton.addActionListener(e -> {
+            if(pizzaCounter > 0) {
+                pizzaCounter--;
+            }
+            count.setText(pizzaCounter + "");
+        });
         panel.add(leftButton);
         JButton rightButton = new JButton(">");
         rightButton.setFont(new Font("Arial", Font.PLAIN, 25));
         rightButton.setBounds(735, 550, 50, 50);
         rightButton.setBackground(new Color(0xeeeeee));
-        //rightButton.addActionListener(e -> pizzaCounter++);
+        rightButton.addActionListener(e -> {
+            if(pizzaCounter < 10) {
+                pizzaCounter++;
+            }
+            count.setText(pizzaCounter + "");
+        });
         panel.add(rightButton);
+
+        // Adds the Add to Cart button.
+        JButton addToCartButton = new JButton("Add to Cart");
+        addToCartButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        addToCartButton.setBounds(800, 550, 165, 50);
+        addToCartButton.setBackground(new Color(0xeeeeee));
+        addToCartButton.addActionListener(e -> {
+            // Determines the type of pizza crust and the size
+            String pizzaCrust = "", pizzaSize = "";
+            boolean[] toppings = new boolean[9];
+            if(thinCrustButton.isSelected()) {
+                pizzaCrust = "thin";
+            } else if(regularCrustButton.isSelected()){
+                pizzaCrust = "regular";
+            } else if(panCrustButton.isSelected()) {
+                pizzaCrust = "pan";
+            } else {
+                System.out.println("Select a Crust Option");
+            }
+            crustGroup.clearSelection();
+            if(smallSizeButton.isSelected()) {
+                pizzaSize = "small";
+            } else if(mediumSizeButton.isSelected()){
+                pizzaSize = "medium";
+            } else if(largeSizeButton.isSelected()) {
+                pizzaSize = "large";
+            } else if(extraLargeSizeButton.isSelected()) {
+                pizzaSize = "extraLarge";
+            } else {
+                System.out.println("Select a Size Option");
+            }
+            sizeGroup.clearSelection();
+            if(cheesePanel.isValid()) {
+                toppings[0] = true;
+                cheeseLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            }
+            if(hamPanel.isValid()) {
+                toppings[1] = true;
+                hamLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            }
+            if(tomatoPanel.isValid()) {
+                toppings[2] = true;
+                tomatoLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            }
+            if(pepperoniPanel.isValid()) {
+                toppings[3] = true;
+                pepperoniLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            }
+            if(greenPepperPanel.isValid()) {
+                toppings[4] = true;
+                greenPepperLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            }
+            if(mushroomPanel.isValid()) {
+                toppings[5] = true;
+                mushroomLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            }
+            if(sausagePanel.isValid()) {
+                toppings[6] = true;
+                sausageLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            }
+            if(onionPanel.isValid()) {
+                toppings[7] = true;
+                onionLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            }
+            if(pineapplePanel.isValid()) {
+                toppings[8] = true;
+                pineappleLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            }
+            Item pizza = new Item(pizzaCrust, pizzaSize, toppings, pizzaCounter);
+            cart.add(pizza);
+            System.out.println("Item added to cart");
+        });
+        panel.add(addToCartButton);
 
         panel.add(cartButton);
         panel.add(menuLabels);
@@ -1261,6 +1565,15 @@ public class Frame extends JFrame{
 
         panel.add(cartButton);
         panel.add(menuLabels);
+
+
+        return panel;
+    }
+    private JPanel createCartScreen() {
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.WHITE);
+        panel.setLayout(null);
+
 
 
         return panel;
