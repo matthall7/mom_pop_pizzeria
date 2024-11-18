@@ -56,6 +56,16 @@ public class Frame extends JFrame{
 
         // Displays main panel
         add(mainPanel);
+
+        //makes sure a database exists and if it doesn't creates a new one
+        try{
+            if (!database.exists()){
+                database.createNewFile();
+            }
+        }
+        catch(IOException e){
+            System.out.println("File not created");
+        }
     }
 
     private JPanel createRedBanner(String title, boolean backButton, boolean logoutButton, boolean accountButton, String previousScreen) {
@@ -415,7 +425,7 @@ public class Frame extends JFrame{
                     BufferedWriter writer = new BufferedWriter(new FileWriter(database, true));
                     //adds the customer information into the database
                     writer.write(phoneNumberText.getText() + "|" + nameText.getText() + "|" + streetText.getText() + "|" +
-                            cityText.getText() + "|" + zipcodeText.getText() + "|" + cardNumberText.getText() + "|" + expirationDateText.getText() + "|" +
+                            cityText.getText() + "|" + stateText.getText() + "|"+ zipcodeText.getText() + "|" + cardNumberText.getText() + "|" + expirationDateText.getText() + "|" +
                             securityCodeText.getText()+"\n");
                     writer.close();
                 } catch(Exception exception) {
@@ -440,27 +450,6 @@ public class Frame extends JFrame{
             expirationDateText.setText("");
             securityCodeText.setText("");
             cardLayout.show(mainPanel, "LOGIN_CUSTOMER");
-            /*
-            if(!streetText.getText().isEmpty() && !cardNumberText.getText().isEmpty()) {
-                customer = new Customer(phoneNumberText.getText(), nameText.getText(), streetText.getText(),
-                        cityText.getText(), stateText.getText(), zipcodeText.getText(), cardNumberText.getText(), expirationDateText.getText(),
-                        securityCodeText.getText());
-            } else {
-                customer = new Customer(phoneNumberText.getText(), nameText.getText());
-            }
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(database, true))) {
-                writer.write("Customer\nPhone Number: " + customer.getPhoneNumber() + "\n" +
-                        "Name: " + customer.getName() + "\nStreet: " + customer.getStreet() + "\n" +
-                        "City: " + customer.getCity() + "\nState: " + customer.getState() + "\n" +
-                        "Zipcode: " + customer.getZipcode() + "\n" + "Card Number: " + customer.getCardNum() +
-                        "\nExpiration Date: " + customer.getExpDate() + "\n" + "CVV: " + customer.getCvv()+"\n");
-                writer.newLine();
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            }
-
-            cardLayout.show(mainPanel, "LOGIN_CUSTOMER");
-            */
         });
         panel.add(createButton);
         JLabel required = new JLabel("* Required");
@@ -1625,11 +1614,20 @@ public class Frame extends JFrame{
         // Adds the content label
         JLabel contentLabel = new JLabel("Contents");
         contentLabel.setFont(new Font("Arial", Font.PLAIN, 30));
-        contentLabel.setBounds(50, 150, 200, 50);
+        contentLabel.setBounds(50, 130, 200, 50);
         panel.add(contentLabel);
 
         // Adds the content panel that shows the items and their price
-
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(null);
+        contentPanel.setBackground(new Color(0xeeeeee));
+        contentPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        contentPanel.setBounds(50, 170, 880, 360);
+        int buffer = 0;
+        for(Item item : cart) {
+            JLabel newItem = new JLabel(item.toString());
+        }
+        panel.add(contentPanel);
 
 
         return panel;
