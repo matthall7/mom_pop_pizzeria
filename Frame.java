@@ -37,6 +37,7 @@ public class Frame extends JFrame{
         JPanel sidesMenu = createSidesMenu();
         JPanel drinksMenu = createDrinksMenu();
         JPanel dessertMenu = createDessertMenu();
+        JPanel cart = createCartScreen();
 
         // Add screens to the main panel
         // ADD EACH SCREEN TO THE MAIN PANEL WITH A UNIQUE NAME
@@ -51,6 +52,7 @@ public class Frame extends JFrame{
         mainPanel.add(sidesMenu, "SIDES_MENU");
         mainPanel.add(drinksMenu, "DRINKS_MENU");
         mainPanel.add(dessertMenu, "DESSERT_MENU");
+        mainPanel.add(cart, "CART");
 
         // Displays main panel
         add(mainPanel);
@@ -209,28 +211,37 @@ public class Frame extends JFrame{
         loginButton.setBounds(getWidth()/2-65, 500, 130, 70);
         loginButton.setFont(new Font("Arial", Font.PLAIN, 30));
         loginButton.addActionListener(e -> {
-            /*try (BufferedReader br = new BufferedReader(new FileReader(database))) {
-                String line;
+            /*
+            try (BufferedReader br = new BufferedReader(new FileReader(database))) {
+            String line;
                 // Read the file line by line
+                boolean found = false;
                 while ((line = br.readLine()) != null) {
                     String[] data = line.split("\\|");
+                    System.out.println(data[0]);
                     if(data[0].equals(phoneNumberText.getText()))
                     {
+                        found = true;
+                        phoneNumberText.setText("");
                         if(data.length == 2)
                         {
-                            customer = new Customer(data[0], data[1]);
+                        customer = new Customer(data[0], data[1]);
+
                         }
                         else{
-                            customer = new Customer(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8]);
+                            customer = new Customer(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
                         }
+
                         cardLayout.show(mainPanel, "CUSTOMER_HOME");
                     }
-                    // TODO: make it appear on screen
-                    System.out.println("Account not found");
+                    if(!found){
+                        System.out.println("Account not found");
+                    }
                 }
             } catch (IOException f) {
                 f.printStackTrace();
-            }*/
+            }
+            */
             cardLayout.show(mainPanel, "CUSTOMER_HOME");
         });
 
@@ -400,6 +411,37 @@ public class Frame extends JFrame{
         createButton.setFont(new Font("Arial", Font.PLAIN, 30));
         createButton.addActionListener(e -> {
             if(!streetText.getText().isEmpty() && !cardNumberText.getText().isEmpty()) {
+                try {
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(database, true));
+                    //adds the customer information into the database
+                    writer.write(phoneNumberText.getText() + "|" + nameText.getText() + "|" + streetText.getText() + "|" +
+                            cityText.getText() + "|" + zipcodeText.getText() + "|" + cardNumberText.getText() + "|" + expirationDateText.getText() + "|" +
+                            securityCodeText.getText()+"\n");
+                    writer.close();
+                } catch(Exception exception) {
+                    System.out.println(exception.getMessage());
+                }
+            } else {
+                try {
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(database, true));
+                    //adds the reduced customer information into the database
+                    writer.write(phoneNumberText.getText() + "|" + nameText.getText()+"\n");
+                    writer.close();
+                } catch(Exception exception) {
+                    System.out.println(exception.getMessage());
+                }
+            }
+            phoneNumberText.setText("");
+            nameText.setText("");
+            streetText.setText("");
+            cityText.setText("");
+            zipcodeText.setText("");
+            cardNumberText.setText("");
+            expirationDateText.setText("");
+            securityCodeText.setText("");
+            cardLayout.show(mainPanel, "LOGIN_CUSTOMER");
+            /*
+            if(!streetText.getText().isEmpty() && !cardNumberText.getText().isEmpty()) {
                 customer = new Customer(phoneNumberText.getText(), nameText.getText(), streetText.getText(),
                         cityText.getText(), stateText.getText(), zipcodeText.getText(), cardNumberText.getText(), expirationDateText.getText(),
                         securityCodeText.getText());
@@ -418,6 +460,7 @@ public class Frame extends JFrame{
             }
 
             cardLayout.show(mainPanel, "LOGIN_CUSTOMER");
+            */
         });
         panel.add(createButton);
         JLabel required = new JLabel("* Required");
@@ -1573,6 +1616,19 @@ public class Frame extends JFrame{
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
         panel.setLayout(null);
+
+        // Adds the red panel and text at the top of the screen.
+        JPanel redPanel = createRedBanner("Cart", true, false, false, "PIZZA_MENU");
+        redPanel.setBounds(0, 0, getWidth(), getHeight()/5);
+        panel.add(redPanel);
+
+        // Adds the content label
+        JLabel contentLabel = new JLabel("Contents");
+        contentLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+        contentLabel.setBounds(50, 150, 200, 50);
+        panel.add(contentLabel);
+
+        // Adds the content panel that shows the items and their price
 
 
 
