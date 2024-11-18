@@ -3,6 +3,7 @@ public class Customer {
     private String name;
     private String street;
     private String city;
+    private String state;
     private String zipcode;
     private String cardNum;
     private String expDate;
@@ -13,11 +14,12 @@ public class Customer {
         this.name = name;
     }
 
-    Customer(String phoneNumber, String name, String street, String city, String zipcode, String cardNum, String expDate, String cvv) {
+    Customer(String phoneNumber, String name, String street, String city, String state, String zipcode, String cardNum, String expDate, String cvv) {
         this.phoneNumber = phoneNumber;
         this.name = name;
         this.street = street;
         this.city = city;
+        this.state = state;
         this.zipcode = zipcode;
         this.cardNum = cardNum;
         this.expDate = expDate;
@@ -86,5 +88,13 @@ public class Customer {
 
     public void setCvv(String cvv) {
         this.cvv = cvv;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }
