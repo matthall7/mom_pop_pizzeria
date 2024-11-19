@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Frame extends JFrame{
     private final CardLayout cardLayout;
@@ -1200,7 +1201,7 @@ public class Frame extends JFrame{
 
 
         // Adds the label at the bottom of the screen about topping prices
-        JLabel toppingsPrice = new JLabel("*Extra topping prices vary on pizza size ($0.72, $1.00, $1.25, $1.50)");
+        JLabel toppingsPrice = new JLabel("*Extra topping prices vary on pizza size ($0.75, $1.00, $1.25, $1.50)");
         toppingsPrice.setFont(new Font("Arial", Font.PLAIN, 20));
         toppingsPrice.setBounds(20, 550, 610, 50);
         panel.add(toppingsPrice);
@@ -1311,6 +1312,7 @@ public class Frame extends JFrame{
                 System.out.println("Select a Size Option");
             }
             sizeGroup.clearSelection();
+            // Resets the selections for the toppings
             cheeseLabel.setFont(new Font("Arial", Font.PLAIN, 20));
             hamLabel.setFont(new Font("Arial", Font.PLAIN, 20));
             tomatoLabel.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -1321,7 +1323,10 @@ public class Frame extends JFrame{
             onionLabel.setFont(new Font("Arial", Font.PLAIN, 20));
             pineappleLabel.setFont(new Font("Arial", Font.PLAIN, 20));
             Item pizza = new Item(pizzaCrust, pizzaSize, toppings, pizzaCounter);
-            cart.add(pizza);
+            for(int i=0; i<pizzaCounter; i++) {
+                cart.add(pizza);
+            }
+            //Arrays.fill(toppings, false);
         });
         panel.add(addToCartButton);
 
@@ -1654,7 +1659,7 @@ public class Frame extends JFrame{
         panel.add(cartButton);
         panel.add(menuLabels);
 
-         //Creates label for drink prices
+        //Creates label for drink prices
         JLabel drinksPrice = new JLabel("All drinks are priced at $1.75");
         drinksPrice.setFont(new Font("Arial", Font.PLAIN, 20));
         drinksPrice.setBounds(20, 225, 610, 50);
@@ -1794,7 +1799,7 @@ public class Frame extends JFrame{
         panel.add(cartButton);
         panel.add(menuLabels);
 
-         //Creates panel and label for the dessert
+        //Creates panel and label for the dessert
         JPanel dessertPanel = new JPanel();
         dessertPanel.setLayout(null);
         dessertPanel.setBounds(225, 260, 500, 300);
