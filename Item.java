@@ -87,8 +87,15 @@ public class Item {
     @Override
     public String toString() {
         if(type.equals("pizza")) {
-            return "pizza";
-            //return "<html>"+amount+size+" "+crust+" pizza<br/>"+toppingsToText(size, toppings)+"<html>";
+            if(size.equals("Small")) {
+                return "<html>"+size+" "+crust+" Pizza ........................................ $5.00<br/>"+toppingsToText(size, toppings)+"</html>";
+            } else if(size.equals("Medium")) {
+                return "<html>"+size+" "+crust+" Pizza ...................................... $7.00<br/>"+toppingsToText(size, toppings)+"</html>";
+            } else if(size.equals("Large")) {
+                return "<html>"+size+" "+crust+" Pizza ........................................ $9.00<br/>"+toppingsToText(size, toppings)+"</html>";
+            } else {
+                return "<html>"+size+" "+crust+" Pizza .................................. $11.00<br/>"+toppingsToText(size, toppings)+"</html>";
+            }
         } else if(type.equals("side")) {
             return "side";
         } else if(type.equals("drink")) {
@@ -101,25 +108,25 @@ public class Item {
     private String toppingsToText(String size, boolean[] toppings) {
         String text = "";
         switch (size) {
-            case "small" -> {
+            case "Small" -> {
                 boolean atLeastOne = false;
                 for(int i=0; i<toppings.length; i++) {
                     if((toppings[i]) && i==0){
-                        text += "<html>Cheese           $0.00<br/><html>";
+                        text += "Cheese  ....................................................... $0.00<br/>";
                     }
                     if((toppings[i]) && i==1){
                         if(atLeastOne) {
-                            text += "<html>Ham           $0.75<br/><html>";
+                            text += "Ham  ............................................................ $0.75<br/>";
                         } else {
-                            text += "<html>Ham           $0.00<br/><html>";
+                            text += "Ham  ............................................................ $0.00<br/>";
                             atLeastOne = true;
                         }
                     }
                     if((toppings[i]) && i==2){
                         if(atLeastOne) {
-                            text += "<html>Tomato           $0.75<br/><html>";
+                            text += "Tomato  ....................................................... $0.00<br/>";
                         } else {
-                            text += "<html>Tomato           $0.00<br/><html>";
+                            text += "Tomato  ....................................................... $0.00<br/>";
                             atLeastOne = true;
                         }
                     }
@@ -173,7 +180,7 @@ public class Item {
                     }
                 }
             }
-            case "medium" -> {
+            case "Medium" -> {
                 boolean atLeastOne = false;
                 for(int i=0; i<toppings.length; i++) {
                     if((toppings[i]) && i==0){
@@ -245,7 +252,7 @@ public class Item {
                     }
                 }
             }
-            case "large" -> {
+            case "Large" -> {
                 boolean atLeastOne = false;
                 for(int i=0; i<toppings.length; i++) {
                     if((toppings[i]) && i==0){
