@@ -65,6 +65,7 @@ public class Item {
                 }
             }
         }
+        price *= amount;
     }
 
     Item(String side, int amount) {
@@ -86,73 +87,307 @@ public class Item {
     @Override
     public String toString() {
         if(type.equals("pizza")) {
-            return "<html>"+size+" "+crust+" pizza<br/>"+toppingsToText(size, toppings)+"<html>";
-
+            return "pizza";
+            //return "<html>"+amount+size+" "+crust+" pizza<br/>"+toppingsToText(size, toppings)+"<html>";
         } else if(type.equals("side")) {
-
+            return "side";
         } else if(type.equals("drink")) {
-
+            return "drink";
         } else {
-            return "hi";
+            return "dessert";
         }
-        return null;
     }
 
     private String toppingsToText(String size, boolean[] toppings) {
         String text = "";
         switch (size) {
             case "small" -> {
-                //
+                boolean atLeastOne = false;
+                for(int i=0; i<toppings.length; i++) {
+                    if((toppings[i]) && i==0){
+                        text += "<html>Cheese           $0.00<br/><html>";
+                    }
+                    if((toppings[i]) && i==1){
+                        if(atLeastOne) {
+                            text += "<html>Ham           $0.75<br/><html>";
+                        } else {
+                            text += "<html>Ham           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==2){
+                        if(atLeastOne) {
+                            text += "<html>Tomato           $0.75<br/><html>";
+                        } else {
+                            text += "<html>Tomato           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==3){
+                        if(atLeastOne) {
+                            text += "<html>Pepperoni           $0.75<br/><html>";
+                        } else {
+                            text += "<html>Pepperoni           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==4){
+                        if(atLeastOne) {
+                            text += "<html>Green Pepper           $0.75<br/><html>";
+                        } else {
+                            text += "<html>Green Pepper           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==5){
+                        if(atLeastOne) {
+                            text += "<html>Mushroom           $0.75<br/><html>";
+                        } else {
+                            text += "<html>Mushroom           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==6){
+                        if(atLeastOne) {
+                            text += "<html>Sausage           $0.75<br/><html>";
+                        } else {
+                            text += "<html>Sausage           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==7){
+                        if(atLeastOne) {
+                            text += "<html>Onion           $0.75<br/><html>";
+                        } else {
+                            text += "<html>Onion           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==8){
+                        if(atLeastOne) {
+                            text += "<html>Pineapple           $0.75<br/><html>";
+                        } else {
+                            text += "<html>Pineapple           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                }
             }
             case "medium" -> {
-                //
+                boolean atLeastOne = false;
+                for(int i=0; i<toppings.length; i++) {
+                    if((toppings[i]) && i==0){
+                        text += "<html>Cheese           $0.00<br/><html>";
+                    }
+                    if((toppings[i]) && i==1){
+                        if(atLeastOne) {
+                            text += "<html>Ham           $1.00<br/><html>";
+                        } else {
+                            text += "<html>Ham           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==2){
+                        if(atLeastOne) {
+                            text += "<html>Tomato           $1.00<br/><html>";
+                        } else {
+                            text += "<html>Tomato           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==3){
+                        if(atLeastOne) {
+                            text += "<html>Pepperoni           $1.00<br/><html>";
+                        } else {
+                            text += "<html>Pepperoni           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==4){
+                        if(atLeastOne) {
+                            text += "<html>Green Pepper           $1.00<br/><html>";
+                        } else {
+                            text += "<html>Green Pepper           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==5){
+                        if(atLeastOne) {
+                            text += "<html>Mushroom           $1.00<br/><html>";
+                        } else {
+                            text += "<html>Mushroom           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==6){
+                        if(atLeastOne) {
+                            text += "<html>Sausage           $1.00<br/><html>";
+                        } else {
+                            text += "<html>Sausage           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==7){
+                        if(atLeastOne) {
+                            text += "<html>Onion           $1.00<br/><html>";
+                        } else {
+                            text += "<html>Onion           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==8){
+                        if(atLeastOne) {
+                            text += "<html>Pineapple           $1.00<br/><html>";
+                        } else {
+                            text += "<html>Pineapple           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                }
             }
             case "large" -> {
-                //
+                boolean atLeastOne = false;
+                for(int i=0; i<toppings.length; i++) {
+                    if((toppings[i]) && i==0){
+                        text += "<html>Cheese           $0.00<br/><html>";
+                    }
+                    if((toppings[i]) && i==1){
+                        if(atLeastOne) {
+                            text += "<html>Ham           $1.25<br/><html>";
+                        } else {
+                            text += "<html>Ham           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==2){
+                        if(atLeastOne) {
+                            text += "<html>Tomato           $1.25<br/><html>";
+                        } else {
+                            text += "<html>Tomato           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==3){
+                        if(atLeastOne) {
+                            text += "<html>Pepperoni           $1.25<br/><html>";
+                        } else {
+                            text += "<html>Pepperoni           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==4){
+                        if(atLeastOne) {
+                            text += "<html>Green Pepper           $1.25<br/><html>";
+                        } else {
+                            text += "<html>Green Pepper           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==5){
+                        if(atLeastOne) {
+                            text += "<html>Mushroom           $1.25<br/><html>";
+                        } else {
+                            text += "<html>Mushroom           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==6){
+                        if(atLeastOne) {
+                            text += "<html>Sausage           $1.25<br/><html>";
+                        } else {
+                            text += "<html>Sausage           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==7){
+                        if(atLeastOne) {
+                            text += "<html>Onion           $1.25<br/><html>";
+                        } else {
+                            text += "<html>Onion           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==8){
+                        if(atLeastOne) {
+                            text += "<html>Pineapple           $1.25<br/><html>";
+                        } else {
+                            text += "<html>Pineapple           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                }
             }
             default-> {
-                //
-            }
-        }
-        boolean atLeastOne = false;
-        for(int i=0; i<toppings.length; i++) {
-            if((toppings[i]) && i==0){
-                text += "<html>Cheese           $0.00<br/><html>";
-            }
-            if((toppings[i]) && i==1){
-                atLeastOne = true;
-                if(atLeastOne) {
-                    
+                boolean atLeastOne = false;
+                for(int i=0; i<toppings.length; i++) {
+                    if((toppings[i]) && i==0){
+                        text += "<html>Cheese           $0.00<br/><html>";
+                    }
+                    if((toppings[i]) && i==1){
+                        if(atLeastOne) {
+                            text += "<html>Ham           $1.50<br/><html>";
+                        } else {
+                            text += "<html>Ham           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==2){
+                        if(atLeastOne) {
+                            text += "<html>Tomato           $1.50<br/><html>";
+                        } else {
+                            text += "<html>Tomato           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==3){
+                        if(atLeastOne) {
+                            text += "<html>Pepperoni           $1.50<br/><html>";
+                        } else {
+                            text += "<html>Pepperoni           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==4){
+                        if(atLeastOne) {
+                            text += "<html>Green Pepper           $1.50<br/><html>";
+                        } else {
+                            text += "<html>Green Pepper           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==5){
+                        if(atLeastOne) {
+                            text += "<html>Mushroom           $1.50<br/><html>";
+                        } else {
+                            text += "<html>Mushroom           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==6){
+                        if(atLeastOne) {
+                            text += "<html>Sausage           $1.50<br/><html>";
+                        } else {
+                            text += "<html>Sausage           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==7){
+                        if(atLeastOne) {
+                            text += "<html>Onion           $1.50<br/><html>";
+                        } else {
+                            text += "<html>Onion           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
+                    if((toppings[i]) && i==8){
+                        if(atLeastOne) {
+                            text += "<html>Pineapple           $1.50<br/><html>";
+                        } else {
+                            text += "<html>Pineapple           $0.00<br/><html>";
+                            atLeastOne = true;
+                        }
+                    }
                 }
-                text += "<html>Ham           $0.00<br/><html>";
-            }
-            if((toppings[i]) && i==2){
-                atLeastOne = true;
-                text += "<html>Tomato<br/><html>";
-            }
-            if((toppings[i]) && i==3){
-                atLeastOne = true;
-                text += "<html>Pepperoni<br/><html>";
-            }
-            if((toppings[i]) && i==4){
-                atLeastOne = true;
-                text += "<html>Green Pepper<br/><html>";
-            }
-            if((toppings[i]) && i==5){
-                atLeastOne = true;
-                text += "<html>Mushroom<br/><html>";
-            }
-            if((toppings[i]) && i==6){
-                atLeastOne = true;
-                text += "<html>Sausage<br/><html>";
-            }
-            if((toppings[i]) && i==7){
-                atLeastOne = true;
-                text += "<html>Onion<br/><html>";
-            }
-            if((toppings[i]) && i==8){
-                atLeastOne = true;
-                text += "<html>Pineapple<br/><html>";
             }
         }
         return text;
