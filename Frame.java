@@ -9,7 +9,7 @@ public class Frame extends JFrame{
     private final CardLayout cardLayout;
     private final JPanel mainPanel;
     private Customer customer;
-    private final ArrayList<Item> cart = new ArrayList<>();
+    private ArrayList<Item> cart = new ArrayList<>();
     private int pizzaCounter = 1;
     private File database = new File("Customer DataBase.txt");
 
@@ -1285,7 +1285,7 @@ public class Frame extends JFrame{
             }
             Item pizza = new Item(pizzaCrust, pizzaSize, toppings, pizzaCounter);
             cart.add(pizza);
-            System.out.println("Item added to cart");
+            System.out.println("Item added to cart\n"+cart.size());
         });
         panel.add(addToCartButton);
 
@@ -1618,16 +1618,20 @@ public class Frame extends JFrame{
         panel.add(contentLabel);
 
         // Adds the content panel that shows the items and their price
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(null);
-        contentPanel.setBackground(new Color(0xeeeeee));
-        contentPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        contentPanel.setBounds(50, 170, 880, 360);
+        JEditorPane contentPane = new JEditorPane();
+        contentPane.setLayout(null);
+        contentPane.setBackground(new Color(0xeeeeee));
+        contentPane.setBorder(BorderFactory.createLineBorder(Color.black));
+        contentPane.setBounds(50, 170, 880, 360);
         int buffer = 0;
-        for(Item item : cart) {
+        for (Item item : cart) {
             JLabel newItem = new JLabel(item.toString());
+            newItem.setFont(new Font("Arial", Font.PLAIN, 30));
+            newItem.setBounds(75, 300 - buffer, 200, 50);
+            contentPane.add(newItem);
+            buffer += 60;
         }
-        panel.add(contentPanel);
+        panel.add(contentPane);
 
 
         return panel;
