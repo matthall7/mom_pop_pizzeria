@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
@@ -9,9 +11,11 @@ public class Frame extends JFrame{
     private final CardLayout cardLayout;
     private final JPanel mainPanel;
     private Customer customer;
-    private ArrayList<Item> cart = new ArrayList<>();
+    private final ArrayList<Item> cart = new ArrayList<>();
+    private final JPanel cartItems = new JPanel();
+    private final JScrollPane scrollPane = new JScrollPane(cartItems);
     private int pizzaCounter = 1;
-    private File database = new File("Customer DataBase.txt");
+    private final File database = new File("Customer DataBase.txt");
 
     Frame() {
         // Sets up the frame
@@ -19,6 +23,13 @@ public class Frame extends JFrame{
         setSize(1000, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+
+        // Creates the Cart Screen that items get added to
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        cartItems.setLayout(new BoxLayout(cartItems, BoxLayout.Y_AXIS));
+        scrollPane.setBackground(new Color(0xeeeeee));
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.black));
+        scrollPane.setBounds(50, 170, 880, 360);
 
         // Initialize CardLayout and main panel
         cardLayout = new CardLayout();
@@ -57,7 +68,7 @@ public class Frame extends JFrame{
         // Displays main panel
         add(mainPanel);
 
-        //makes sure a database exists and if it doesn't creates a new one
+        //makes sure a database exists and if it doesn't create a new one
         try{
             if (!database.exists()){
                 database.createNewFile();
@@ -80,7 +91,15 @@ public class Frame extends JFrame{
             JButton back = new JButton("Back");
             back.setFont(new Font("Arial", Font.PLAIN, 25));
             back.setSize(110, 60);
-            back.addActionListener(e -> cardLayout.show(mainPanel, previousScreen));
+            back.addActionListener(e -> {
+                if(previousScreen.equals("PIZZA_MENU")) {
+                    cartItems.removeAll();
+                    cartItems.revalidate();
+                    cartItems.repaint();
+                    cardLayout.show(mainPanel, previousScreen);
+                }
+                cardLayout.show(mainPanel, previousScreen);
+            });
 
             redPanel.add(back);
         }
@@ -928,6 +947,7 @@ public class Frame extends JFrame{
         toppingsText.setFont(new Font("Arial", Font.PLAIN, 30));
         toppingsText.setBounds(700, 250, 150, 50);
         panel.add(toppingsText);
+        boolean[] toppings = new boolean[9]; // Instantiates the toppings array here to that the mouseListeners below can alter the topping choices
 
         JPanel cheesePanel = new JPanel();
         cheesePanel.setLayout(null);
@@ -952,7 +972,7 @@ public class Frame extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 cheeseLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                cheesePanel.validate();
+                toppings[0] = true;
             }
         });
         panel.add(cheesePanel);
@@ -979,7 +999,7 @@ public class Frame extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 hamLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                hamPanel.validate();
+                toppings[1] = true;
             }
         });
         panel.add(hamPanel);
@@ -1006,7 +1026,7 @@ public class Frame extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 tomatoLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                tomatoPanel.validate();
+                toppings[2] = true;
             }
         });
         panel.add(tomatoPanel);
@@ -1034,7 +1054,7 @@ public class Frame extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 pepperoniLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                pepperoniPanel.validate();
+                toppings[3] = true;
             }
         });
         panel.add(pepperoniPanel);
@@ -1061,7 +1081,7 @@ public class Frame extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 greenPepperLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                greenPepperPanel.validate();
+                toppings[4] = true;
             }
         });
         panel.add(greenPepperPanel);
@@ -1088,7 +1108,7 @@ public class Frame extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 mushroomLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                mushroomPanel.validate();
+                toppings[5] = true;
             }
         });
         panel.add(mushroomPanel);
@@ -1116,7 +1136,7 @@ public class Frame extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 sausageLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                sausagePanel.validate();
+                toppings[6] = true;
             }
         });
         panel.add(sausagePanel);
@@ -1143,7 +1163,7 @@ public class Frame extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 onionLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                onionPanel.validate();
+                toppings[7] = true;
             }
         });
         panel.add(onionPanel);
@@ -1170,10 +1190,11 @@ public class Frame extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 pineappleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                pineapplePanel.validate();
+                toppings[8] = true;
             }
         });
         panel.add(pineapplePanel);
+
 
         // Adds the label at the bottom of the screen about topping prices
         JLabel toppingsPrice = new JLabel("*Extra topping prices vary on pizza size ($0.72, $1.00, $1.25, $1.50)");
@@ -1186,7 +1207,48 @@ public class Frame extends JFrame{
         cartButton.setFont(new Font("Arial", Font.PLAIN, 30));
         cartButton.setBounds(780, 155, 110, 60);
         cartButton.setBackground(new Color(0xeeeeee));
-        cartButton.addActionListener(e -> cardLayout.show(mainPanel, "CART"));
+        cartButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "CART");
+            for(Item item : cart) {
+                JPanel itemPanel = new JPanel(new GridBagLayout());
+                itemPanel.setPreferredSize(new Dimension(800, 200)); // Set fixed size for each item
+                itemPanel.setMaximumSize(new Dimension(800, 800)); // Prevent resizing
+                JLabel itemLabel = new JLabel(item.toString());
+                itemLabel.setHorizontalAlignment(SwingConstants.LEFT);
+                itemLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+
+                // Create a remove button
+                JButton removeButton = new JButton("Remove");
+                removeButton.setFont(new Font("Arial", Font.PLAIN, 17));
+                removeButton.setPreferredSize(new Dimension(100, 30));
+                removeButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        cart.remove(item);
+                        cartItems.remove(itemPanel); // Remove the item panel
+                        cartItems.revalidate(); // Refresh the panel
+                        cartItems.repaint();
+                    }
+                });
+
+                // Use GridBagConstraints to position components
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.weightx = 1.0;
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                itemPanel.add(itemLabel, gbc);
+
+                gbc.weightx = 0.0;
+                gbc.gridx = 1;
+                itemPanel.add(removeButton, gbc);
+
+                // Add the item panel to the cart
+                cartItems.add(itemPanel);
+                cartItems.revalidate();
+                cartItems.repaint();
+            }
+        });
 
         // Adds the counter at the bottom for how many pizzas are ordered
         JLabel count = new JLabel(pizzaCounter+"");
@@ -1224,68 +1286,39 @@ public class Frame extends JFrame{
         addToCartButton.addActionListener(e -> {
             // Determines the type of pizza crust and the size
             String pizzaCrust = "", pizzaSize = "";
-            boolean[] toppings = new boolean[9];
             if(thinCrustButton.isSelected()) {
-                pizzaCrust = "thin";
+                pizzaCrust = "Thin";
             } else if(regularCrustButton.isSelected()){
-                pizzaCrust = "regular";
+                pizzaCrust = "Regular";
             } else if(panCrustButton.isSelected()) {
-                pizzaCrust = "pan";
+                pizzaCrust = "Pan";
             } else {
                 System.out.println("Select a Crust Option");
             }
             crustGroup.clearSelection();
             if(smallSizeButton.isSelected()) {
-                pizzaSize = "small";
+                pizzaSize = "Small";
             } else if(mediumSizeButton.isSelected()){
-                pizzaSize = "medium";
+                pizzaSize = "Medium";
             } else if(largeSizeButton.isSelected()) {
-                pizzaSize = "large";
+                pizzaSize = "Large";
             } else if(extraLargeSizeButton.isSelected()) {
-                pizzaSize = "extraLarge";
+                pizzaSize = "Extra Large";
             } else {
                 System.out.println("Select a Size Option");
             }
             sizeGroup.clearSelection();
-            if(cheesePanel.isValid()) {
-                toppings[0] = true;
-                cheeseLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-            }
-            if(hamPanel.isValid()) {
-                toppings[1] = true;
-                hamLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-            }
-            if(tomatoPanel.isValid()) {
-                toppings[2] = true;
-                tomatoLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-            }
-            if(pepperoniPanel.isValid()) {
-                toppings[3] = true;
-                pepperoniLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-            }
-            if(greenPepperPanel.isValid()) {
-                toppings[4] = true;
-                greenPepperLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-            }
-            if(mushroomPanel.isValid()) {
-                toppings[5] = true;
-                mushroomLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-            }
-            if(sausagePanel.isValid()) {
-                toppings[6] = true;
-                sausageLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-            }
-            if(onionPanel.isValid()) {
-                toppings[7] = true;
-                onionLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-            }
-            if(pineapplePanel.isValid()) {
-                toppings[8] = true;
-                pineappleLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-            }
+            cheeseLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            hamLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            tomatoLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            pepperoniLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            greenPepperLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            mushroomLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            sausageLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            onionLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            pineappleLabel.setFont(new Font("Arial", Font.PLAIN, 20));
             Item pizza = new Item(pizzaCrust, pizzaSize, toppings, pizzaCounter);
             cart.add(pizza);
-            System.out.println("Item added to cart\n"+cart.size());
         });
         panel.add(addToCartButton);
 
@@ -1294,6 +1327,7 @@ public class Frame extends JFrame{
 
         return panel;
     }
+
     private JPanel createSidesMenu() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -1396,6 +1430,7 @@ public class Frame extends JFrame{
 
         return panel;
     }
+
     private JPanel createDrinksMenu() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -1498,6 +1533,7 @@ public class Frame extends JFrame{
 
         return panel;
     }
+
     private JPanel createDessertMenu() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -1601,6 +1637,7 @@ public class Frame extends JFrame{
 
         return panel;
     }
+
     private JPanel createCartScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -1617,22 +1654,8 @@ public class Frame extends JFrame{
         contentLabel.setBounds(50, 130, 200, 50);
         panel.add(contentLabel);
 
-        // Adds the content panel that shows the items and their price
-        JEditorPane contentPane = new JEditorPane();
-        contentPane.setLayout(null);
-        contentPane.setBackground(new Color(0xeeeeee));
-        contentPane.setBorder(BorderFactory.createLineBorder(Color.black));
-        contentPane.setBounds(50, 170, 880, 360);
-        int buffer = 0;
-        for (Item item : cart) {
-            JLabel newItem = new JLabel(item.toString());
-            newItem.setFont(new Font("Arial", Font.PLAIN, 30));
-            newItem.setBounds(75, 300 - buffer, 200, 50);
-            contentPane.add(newItem);
-            buffer += 60;
-        }
-        panel.add(contentPane);
-
+        // Adds the scrollPane that was defined above in Frame()
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
     }
