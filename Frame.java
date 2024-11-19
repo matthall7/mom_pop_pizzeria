@@ -15,6 +15,9 @@ public class Frame extends JFrame{
     private final JPanel cartItems = new JPanel();
     private final JScrollPane scrollPane = new JScrollPane(cartItems);
     private int pizzaCounter = 1;
+    private int dessertCounter = 1;
+    private int bSticksCounter = 1;
+    private int bitesCounter = 1;
     private final File database = new File("Customer DataBase.txt");
 
     Frame() {
@@ -1428,6 +1431,126 @@ public class Frame extends JFrame{
         panel.add(cartButton);
         panel.add(menuLabels);
 
+        //Creates breadsticks panel
+        JPanel breadsticks = new JPanel();
+        breadsticks.setLayout(null);
+        breadsticks.setBounds(20,240,475,155);
+        panel.add(breadsticks);
+
+        //Creates label for breadsticks
+        JLabel bSticksLabel = new JLabel("Breadsticks");
+        bSticksLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        bSticksLabel.setBounds(125, 25, 165, 30);
+        breadsticks.add(bSticksLabel);
+
+        //Creates description for breadsticks
+        JLabel bSticksDesc = new JLabel("Soft and buttery, served with cheese dip.");
+        bSticksDesc.setFont(new Font("Arial", Font.PLAIN, 16));
+        bSticksDesc.setBounds(125,50,450,30);
+        breadsticks.add(bSticksDesc);
+
+        //Adds price for breadsticks
+        JLabel bSticksPrice = new JLabel("$4.00");
+        bSticksPrice.setFont(new Font("Arial", Font.PLAIN, 24));
+        bSticksPrice.setBounds(400,116,60,50);
+        breadsticks.add(bSticksPrice);
+
+        //Creates display text for selecting quantity of breadsticks
+        JLabel sticksCount = new JLabel(bSticksCounter+"");
+        sticksCount.setFont(new Font("Arial", Font.PLAIN, 25));
+        sticksCount.setBounds(575, 343, 50, 50);
+        panel.add(sticksCount);
+
+        //Creates left button
+        JButton sticksLeftButton = new JButton("<");
+        sticksLeftButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        sticksLeftButton.setBounds(510, 343, 50, 50);
+        sticksLeftButton.setBackground(new Color(0xeeeeee));
+        sticksLeftButton.addActionListener(e -> {
+            if(bSticksCounter > 0) {
+                bSticksCounter--;
+            }
+            sticksCount.setText(bSticksCounter + "");
+        });
+        panel.add(sticksLeftButton);
+
+        //Creates right button
+        JButton sticksRightButton = new JButton(">");
+        sticksRightButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        sticksRightButton.setBounds(610, 343, 50, 50);
+        sticksRightButton.setBackground(new Color(0xeeeeee));
+        sticksRightButton.addActionListener(e -> {
+            if(bSticksCounter < 10) {
+                bSticksCounter++;
+            }
+            sticksCount.setText(bSticksCounter + "");
+        });
+        panel.add(sticksRightButton);
+
+
+        //Creates breadstick bites panel
+        JPanel bitesPanel = new JPanel();
+        bitesPanel.setLayout(null);
+        bitesPanel.setBounds(20,420,475,155);
+        panel.add(bitesPanel);
+
+        //Creates label for breadstick bites
+        JLabel bitesLabel = new JLabel("Breadstick Bites");
+        bitesLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        bitesLabel.setBounds(125, 25, 195, 30);
+        bitesPanel.add(bitesLabel);
+
+        //Creates description for breadstick bites
+        JLabel bitesDesc = new JLabel("Perfect bite size treats.");
+        bitesDesc.setFont(new Font("Arial", Font.PLAIN, 16));
+        bitesDesc.setBounds(125,50,450,30);
+        bitesPanel.add(bitesDesc);
+
+        //Adds price for breadstick bites
+        JLabel bitesPrice = new JLabel("$2.00");
+        bitesPrice.setFont(new Font("Arial", Font.PLAIN, 24));
+        bitesPrice.setBounds(400,116,60,50);
+        bitesPanel.add(bitesPrice);
+
+        //Creates display text for selecting quantity of breadsticks
+        JLabel bitesCount = new JLabel(bitesCounter+"");
+        bitesCount.setFont(new Font("Arial", Font.PLAIN, 25));
+        bitesCount.setBounds(575, 523, 50, 50);
+        panel.add(bitesCount);
+
+        //Creates left button
+        JButton bitesLeftButton = new JButton("<");
+        bitesLeftButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        bitesLeftButton.setBounds(510, 523, 50, 50);
+        bitesLeftButton.setBackground(new Color(0xeeeeee));
+        bitesLeftButton.addActionListener(e -> {
+            if(bitesCounter > 0) {
+                bitesCounter--;
+            }
+            bitesCount.setText(bitesCounter + "");
+        });
+        panel.add(bitesLeftButton);
+
+        //Creates right button
+        JButton bitesRightButton = new JButton(">");
+        bitesRightButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        bitesRightButton.setBounds(610, 523, 50, 50);
+        bitesRightButton.setBackground(new Color(0xeeeeee));
+        bitesRightButton.addActionListener(e -> {
+            if(bitesCounter < 10) {
+                bitesCounter++;
+            }
+            bitesCount.setText(bitesCounter + "");
+        });
+        panel.add(bitesRightButton);
+
+        // Adds the Add to Cart button.
+        JButton addToCartButton = new JButton("Add to Cart");
+        addToCartButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        addToCartButton.setBounds(790, 540, 165, 50);
+        addToCartButton.setBackground(new Color(0xeeeeee));
+        panel.add(addToCartButton);
+
         return panel;
     }
 
@@ -1531,7 +1654,44 @@ public class Frame extends JFrame{
         panel.add(cartButton);
         panel.add(menuLabels);
 
+         //Creates label for drink prices
+        JLabel drinksPrice = new JLabel("All drinks are priced at $1.75");
+        drinksPrice.setFont(new Font("Arial", Font.PLAIN, 20));
+        drinksPrice.setBounds(20, 225, 610, 50);
+        panel.add(drinksPrice);
+
+        //Creates panels and labels for each drink
+        JPanel pepsi = createDrink("Pepsi","", 20, 290, 125, 35);
+        panel.add(pepsi);
+        JPanel crush = createDrink("Crush","",260, 290, 125, 35);
+        panel.add(crush);
+        JPanel rootBeer = createDrink("Root","Beer", 500, 290, 125, 35);
+        panel.add(rootBeer);
+        JPanel starry = createDrink("Starry", "",740, 290, 125, 35);
+        panel.add(starry);
+        JPanel dietPepsi = createDrink("Diet","Pepsi", 20, 430, 125, 35);
+        panel.add(dietPepsi);
+        JPanel dietCrush = createDrink("Diet", "Crush",260, 430, 125, 35);
+        panel.add(dietCrush);
+        JPanel dietRootBeer = createDrink("Diet Root","Beer", 500, 430, 125, 35);
+        panel.add(dietRootBeer);
+        JPanel lemonade = createDrink("Lemonade","", 740, 430, 125, 35);
+        panel.add(lemonade);
+
         return panel;
+    }
+    //Method to create each drink
+    private JPanel createDrink(String name1, String name2, int panelX, int panelY, int labelX, int labelY){
+        //Creates and sets the name for the panel
+        JPanel newDrink = new JPanel();
+        newDrink.setLayout(null);
+        newDrink.setBounds(panelX, panelY, 220, 120);
+        JLabel drinkLabel = new JLabel("<html>"+name1+"<br/>"+name2+"<html>");
+        drinkLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        drinkLabel.setBounds(labelX, labelY, 110, 60);
+        newDrink.add(drinkLabel);
+
+        return newDrink;
     }
 
     private JPanel createDessertMenu() {
@@ -1633,6 +1793,64 @@ public class Frame extends JFrame{
 
         panel.add(cartButton);
         panel.add(menuLabels);
+
+         //Creates panel and label for the dessert
+        JPanel dessertPanel = new JPanel();
+        dessertPanel.setLayout(null);
+        dessertPanel.setBounds(225, 260, 500, 300);
+        JLabel cookieLabel = new JLabel("<html>Mega Chocolate<br/>Chip Cookie<html>");
+        cookieLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        cookieLabel.setBounds(325, 20, 300, 50);
+        dessertPanel.add(cookieLabel);
+
+        //Creates label for the cookie price
+        JLabel cookiePrice = new JLabel("<html>$4.00<html>");
+        cookiePrice.setFont(new Font("Arial", Font.PLAIN, 20));
+        cookiePrice.setBounds(425, 240, 50, 50);
+        dessertPanel.add(cookiePrice);
+        panel.add(dessertPanel);
+
+        //Adds image of cookie
+
+
+        //Creates display text for selecting quantity of desserts
+        JLabel count = new JLabel(dessertCounter+"");
+        count.setFont(new Font("Arial", Font.PLAIN, 25));
+        count.setBounds(375, 570, 50, 50);
+        panel.add(count);
+
+        //Creates left button
+        JButton leftButton = new JButton("<");
+        leftButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        leftButton.setBounds(310, 570, 50, 50);
+        leftButton.setBackground(new Color(0xeeeeee));
+        leftButton.addActionListener(e -> {
+            if(dessertCounter > 0) {
+                dessertCounter--;
+            }
+            count.setText(dessertCounter + "");
+        });
+        panel.add(leftButton);
+
+        //Creates right button
+        JButton rightButton = new JButton(">");
+        rightButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        rightButton.setBounds(410, 570, 50, 50);
+        rightButton.setBackground(new Color(0xeeeeee));
+        rightButton.addActionListener(e -> {
+            if(dessertCounter < 10) {
+                dessertCounter++;
+            }
+            count.setText(dessertCounter + "");
+        });
+        panel.add(rightButton);
+
+        // Adds the Add to Cart button.
+        JButton addToCartButton = new JButton("Add to Cart");
+        addToCartButton.setFont(new Font("Arial", Font.PLAIN, 25));
+        addToCartButton.setBounds(500, 570, 165, 50);
+        addToCartButton.setBackground(new Color(0xeeeeee));
+        panel.add(addToCartButton);
 
 
         return panel;
