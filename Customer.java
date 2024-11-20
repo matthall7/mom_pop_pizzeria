@@ -1,3 +1,7 @@
+/**
+ * Customer --- creates a customer with all the information that can be recorded
+ * Each attribute is a string for easy comparison from the JTextFields and simple readability.
+ */
 public class Customer {
     private String phoneNumber;
     private String name;
