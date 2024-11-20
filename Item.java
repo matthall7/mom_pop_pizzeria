@@ -1,7 +1,12 @@
 import java.util.Arrays;
 
+/**
+ * Item --- creates an item to be place in the cart.
+ * The attribute define what type of item it is, and the qualities of that specific item.
+ * Each constructor is for a different type of item.
+ */
 public class Item {
-    private String type;
+    private final String type;
     private String crust;
     private String size;
     private String side;
@@ -91,31 +96,43 @@ public class Item {
         price = 4f;
     }
 
+    /**
+     * alters the toString of the item to make it show the item description and the price.
+     * @return Returns a string describing the item and its price.
+     */
     @Override
     public String toString() {
-        if(type.equals("pizza")) {
-            if(size.equals("Small")) {
-                return "<html>"+size+" "+crust+" Pizza ........................................ $5.00<br/>"+toppingsToText(size, toppings)+"</html>";
-            } else if(size.equals("Medium")) {
-                return "<html>"+size+" "+crust+" Pizza ................................. $7.00<br/>"+toppingsToText(size, toppings)+"</html>";
-            } else if(size.equals("Large")) {
-                return "<html>"+size+" "+crust+" Pizza .................................... $9.00<br/>"+toppingsToText(size, toppings)+"</html>";
-            } else {
-                return "<html>"+size+" "+crust+" Pizza ............................ $11.00<br/>"+toppingsToText(size, toppings)+"</html>";
-            }
-        } else if(type.equals("side")) {
-            if(side.equals("breadStick")) {
-                return "Breadsticks .......................................... $4.00";
-            } else {
-                return "Breadtick Bites ....................................... $2.00";
-            }
-        } else if(type.equals("drink")) {
-            return size+" "+drink+"................................ $1.75";
-        } else {
-            return "Mega Chocolate Chip Cooke ...................... $4.00";
+        switch (type) {
+            case "pizza":
+                return switch (size) {
+                    case "Small" ->
+                            "<html>" + size + " " + crust + " Pizza ........................................ $5.00<br/>" + toppingsToText(size, toppings) + "</html>";
+                    case "Medium" ->
+                            "<html>" + size + " " + crust + " Pizza ................................. $7.00<br/>" + toppingsToText(size, toppings) + "</html>";
+                    case "Large" ->
+                            "<html>" + size + " " + crust + " Pizza .................................... $9.00<br/>" + toppingsToText(size, toppings) + "</html>";
+                    default ->
+                            "<html>" + size + " " + crust + " Pizza ............................ $11.00<br/>" + toppingsToText(size, toppings) + "</html>";
+                };
+            case "side":
+                if (side.equals("breadStick")) {
+                    return "Breadsticks .......................................... $4.00";
+                } else {
+                    return "Breadtick Bites ....................................... $2.00";
+                }
+            case "drink":
+                return size + " " + drink + "................................ $1.75";
+            default:
+                return "Mega Chocolate Chip Cooke ...................... $4.00";
         }
     }
 
+    /**
+     * creates a string for the cart that shows the different toppings that were selected.
+     * @param size size of the pizza.
+     * @param toppings boolean array for the 9 different toppings possible.
+     * @return returns a string displaying all the toppings for the cart.
+     */
     private String toppingsToText(String size, boolean[] toppings) {
         String text = "";
         switch (size) {
