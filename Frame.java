@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
@@ -27,9 +25,10 @@ public class Frame extends JFrame{
     private String endCityText = "";
     private String endStateText = "";
     private String endZipText = "";
-    private JLabel completionText = new JLabel();
+    private final JLabel completionText = new JLabel();
     private Receipt receiptPanel = new Receipt();
     private final File database = new File("Customer DataBase.txt");
+    private boolean taxCreated = false;
 
     Frame() {
         // Sets up the frame
@@ -129,7 +128,7 @@ public class Frame extends JFrame{
                         totalCost += item.getPrice();
                     }
                     // Tax
-                    totalCost += (totalCost *= 0.07f);
+                    totalCost += (totalCost * 0.07f);
                     totalLabel.setText("$"+totalCost);
                 }
                 cardLayout.show(mainPanel, previousScreen);
@@ -167,9 +166,6 @@ public class Frame extends JFrame{
         return redPanel;
     }
 
-    /* Each method below should create a different screen. They can be used multiple times,
-     but should have a distinct name with distinct functionality.
-     */
     private JPanel createTitleScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -275,7 +271,6 @@ public class Frame extends JFrame{
         loginButton.setFont(new Font("Arial", Font.PLAIN, 30));
         loginButton.addActionListener(e -> {
 
-            /*
             try (BufferedReader br = new BufferedReader(new FileReader(database))) {
             String line;
                 // Read the file line by line
@@ -299,14 +294,12 @@ public class Frame extends JFrame{
                         cardLayout.show(mainPanel, "CUSTOMER_HOME");
                     }
                     if(!found){
-                        JOptionPane.showMessageDialog(mainPanel, "Account Not Found", "Invalid", JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane.showMessageDialog(mainPanel, "Account Not Found");
                     }
                 }
             } catch (IOException f) {
                 f.printStackTrace();
             }
-            */
-            cardLayout.show(mainPanel, "CUSTOMER_HOME");
         });
 
         panel.add(loginButton);
@@ -355,8 +348,10 @@ public class Frame extends JFrame{
         loginButton.setBounds(getWidth()/2-65, 500, 130, 70);
         loginButton.setFont(new Font("Arial", Font.PLAIN, 30));
         loginButton.addActionListener(e -> {
-            if(passwordText.getText().equals("adminpassword")) {
-                cardLayout.show(mainPanel, "ADMIN_HOME");
+            if(passwordText.getText().equals("123")) {
+                cardLayout.show(mainPanel, "CUSTOMER_HOME");
+            } else {
+                JOptionPane.showMessageDialog(mainPanel, "Ivalid password");
             }
         });
         panel.add(loginButton);
@@ -674,15 +669,15 @@ public class Frame extends JFrame{
         zipcodeText.setFont(new Font("Arial", Font.PLAIN, 24));
         panel.add(zipcodeText);
 
-        // Adds the Create button to create the account.
-        JButton createButton = new JButton("<html>Save<br/>Changes<html>");
+        // Adds the Save Changes button to create the account.
+        JButton saveChangesButton = new JButton("<html>Save<br/>Changes<html>");
 
-        createButton.setBounds(getWidth()/2-80, 500, 160, 90);
-        createButton.setFont(new Font("Arial", Font.PLAIN, 30));
-        createButton.addActionListener(e -> {
+        saveChangesButton.setBounds(getWidth()/2-80, 500, 160, 90);
+        saveChangesButton.setFont(new Font("Arial", Font.PLAIN, 30));
+        saveChangesButton.addActionListener(e -> {
             //save changes to the account
         });
-        panel.add(createButton);
+        panel.add(saveChangesButton);
         JLabel required = new JLabel("* Required");
         required.setFont(new Font("Arial", Font.PLAIN, 20));
         required.setBounds(getWidth()/2-65, 380, 300, 200);
@@ -1247,26 +1242,23 @@ public class Frame extends JFrame{
                 JButton removeButton = new JButton("Remove");
                 removeButton.setFont(new Font("Arial", Font.PLAIN, 17));
                 removeButton.setPreferredSize(new Dimension(100, 30));
-                removeButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        cart.remove(item);
-                        cartItems.remove(itemPanel); // Remove the item panel
-                        cartItems.revalidate(); // Refresh the panel
-                        cartItems.repaint();
+                removeButton.addActionListener(e1 -> {
+                    cart.remove(item);
+                    cartItems.remove(itemPanel); // Remove the item panel
+                    cartItems.revalidate(); // Refresh the panel
+                    cartItems.repaint();
 
-                        // Updates the Cost of the cart
-                        totalCost = 0;
-                        for(Item item : cart) {
-                            totalCost += item.getPrice();
-                        }
-                        // Tax
-                        totalCost += (totalCost *= 0.07f);
-                        totalLabel.setText("$"+totalCost);
-                        float taxFloat = totalCost*0.07f;
-                        String formatted = String.format("%.2f", taxFloat);
-                        tax.setText("Tax ............................................................. $"+formatted);
+                    // Updates the Cost of the cart
+                    totalCost = 0;
+                    for(Item item1 : cart) {
+                        totalCost += item1.getPrice();
                     }
+                    // Tax
+                    totalCost += (totalCost * 0.07f);
+                    totalLabel.setText("$"+totalCost);
+                    float taxFloat = totalCost*0.07f;
+                    String formatted = String.format("%.2f", taxFloat);
+                    tax.setText("Tax ............................................................. $"+formatted);
                 });
 
                 // Use GridBagConstraints to position components
@@ -1306,7 +1298,10 @@ public class Frame extends JFrame{
             gbc.weightx = 1.0;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            itemPanel.add(tax, gbc);
+            if(!taxCreated) {
+                itemPanel.add(tax, gbc);
+                taxCreated = true;
+            }
             gbc.weightx = 0.0;
             gbc.gridx = 1;
             itemPanel.add(removeButton, gbc);
@@ -1407,7 +1402,7 @@ public class Frame extends JFrame{
                     totalCost += item.getPrice();
                 }
                 // Tax
-                totalCost += (totalCost *= 0.07f);
+                totalCost += (totalCost * 0.07f);
                 totalLabel.setText("$"+totalCost);
             }
             // Resets Selection
@@ -1561,26 +1556,23 @@ public class Frame extends JFrame{
                 JButton removeButton = new JButton("Remove");
                 removeButton.setFont(new Font("Arial", Font.PLAIN, 17));
                 removeButton.setPreferredSize(new Dimension(100, 30));
-                removeButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        cart.remove(item);
-                        cartItems.remove(itemPanel); // Remove the item panel
-                        cartItems.revalidate(); // Refresh the panel
-                        cartItems.repaint();
+                removeButton.addActionListener(e1 -> {
+                    cart.remove(item);
+                    cartItems.remove(itemPanel); // Remove the item panel
+                    cartItems.revalidate(); // Refresh the panel
+                    cartItems.repaint();
 
-                        // Updates the Cost of the cart
-                        totalCost = 0;
-                        for(Item item : cart) {
-                            totalCost += item.getPrice();
-                        }
-                        // Tax
-                        totalCost += (totalCost *= 0.07f);
-                        totalLabel.setText("$"+totalCost);
-                        float taxFloat = totalCost*0.07f;
-                        String formatted = String.format("%.2f", taxFloat);
-                        tax.setText("Tax ............................................................. $"+formatted);
+                    // Updates the Cost of the cart
+                    totalCost = 0;
+                    for(Item item1 : cart) {
+                        totalCost += item1.getPrice();
                     }
+                    // Tax
+                    totalCost += (totalCost * 0.07f);
+                    totalLabel.setText("$"+totalCost);
+                    float taxFloat = totalCost*0.07f;
+                    String formatted = String.format("%.2f", taxFloat);
+                    tax.setText("Tax ............................................................. $"+formatted);
                 });
 
                 // Use GridBagConstraints to position components
@@ -1620,7 +1612,10 @@ public class Frame extends JFrame{
             gbc.weightx = 1.0;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            itemPanel.add(tax, gbc);
+            if(!taxCreated) {
+                itemPanel.add(tax, gbc);
+                taxCreated = true;
+            }
             gbc.weightx = 0.0;
             gbc.gridx = 1;
             itemPanel.add(removeButton, gbc);
@@ -1653,7 +1648,7 @@ public class Frame extends JFrame{
         //Adds price for breadsticks
         JLabel bSticksPrice = new JLabel("$4.00");
         bSticksPrice.setFont(new Font("Arial", Font.PLAIN, 24));
-        bSticksPrice.setBounds(400,116,60,50);
+        bSticksPrice.setBounds(360,116,80,50);
         breadsticks.add(bSticksPrice);
 
         //Creates display text for selecting quantity of breadsticks
@@ -1710,7 +1705,7 @@ public class Frame extends JFrame{
         //Adds price for breadstick bites
         JLabel bitesPrice = new JLabel("$2.00");
         bitesPrice.setFont(new Font("Arial", Font.PLAIN, 24));
-        bitesPrice.setBounds(400,116,60,50);
+        bitesPrice.setBounds(360,116,80,50);
         bitesPanel.add(bitesPrice);
 
         //Creates display text for selecting quantity of breadsticks
@@ -1768,7 +1763,7 @@ public class Frame extends JFrame{
                 totalCost += item.getPrice();
             }
             // Tax
-            totalCost += (totalCost *= 0.07f);
+            totalCost += (totalCost * 0.07f);
             totalLabel.setText("$"+totalCost);
         });
         panel.add(addToCartButton);
@@ -1886,26 +1881,23 @@ public class Frame extends JFrame{
                 JButton removeButton = new JButton("Remove");
                 removeButton.setFont(new Font("Arial", Font.PLAIN, 17));
                 removeButton.setPreferredSize(new Dimension(100, 30));
-                removeButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        cart.remove(item);
-                        cartItems.remove(itemPanel); // Remove the item panel
-                        cartItems.revalidate(); // Refresh the panel
-                        cartItems.repaint();
+                removeButton.addActionListener(e1 -> {
+                    cart.remove(item);
+                    cartItems.remove(itemPanel); // Remove the item panel
+                    cartItems.revalidate(); // Refresh the panel
+                    cartItems.repaint();
 
-                        // Updates the Cost of the cart
-                        totalCost = 0;
-                        for(Item item : cart) {
-                            totalCost += item.getPrice();
-                        }
-                        // Tax
-                        totalCost += (totalCost *= 0.07f);
-                        totalLabel.setText("$"+totalCost);
-                        float taxFloat = totalCost*0.07f;
-                        String formatted = String.format("%.2f", taxFloat);
-                        tax.setText("Tax ............................................................. $"+formatted);
+                    // Updates the Cost of the cart
+                    totalCost = 0;
+                    for(Item item1 : cart) {
+                        totalCost += item1.getPrice();
                     }
+                    // Tax
+                    totalCost += (totalCost * 0.07f);
+                    totalLabel.setText("$"+totalCost);
+                    float taxFloat = totalCost*0.07f;
+                    String formatted = String.format("%.2f", taxFloat);
+                    tax.setText("Tax ............................................................. $"+formatted);
                 });
 
                 // Use GridBagConstraints to position components
@@ -1945,7 +1937,10 @@ public class Frame extends JFrame{
             gbc.weightx = 1.0;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            itemPanel.add(tax, gbc);
+            if(!taxCreated) {
+                itemPanel.add(tax, gbc);
+                taxCreated = true;
+            }
             gbc.weightx = 0.0;
             gbc.gridx = 1;
             itemPanel.add(removeButton, gbc);
@@ -1964,34 +1959,34 @@ public class Frame extends JFrame{
         panel.add(drinksPrice);
 
         //Creates panels and labels for each drink
-        JPanel pepsi = createDrink("Pepsi","", 20, 290, 125, 35);
+        JPanel pepsi = createDrink("Pepsi","", 20, 290);
         panel.add(pepsi);
-        JPanel crush = createDrink("Crush","",260, 290, 125, 35);
+        JPanel crush = createDrink("Crush","",260, 290);
         panel.add(crush);
-        JPanel rootBeer = createDrink("Root","Beer", 500, 290, 125, 35);
+        JPanel rootBeer = createDrink("Root","Beer", 500, 290);
         panel.add(rootBeer);
-        JPanel starry = createDrink("Starry", "",740, 290, 125, 35);
+        JPanel starry = createDrink("Starry", "",740, 290);
         panel.add(starry);
-        JPanel dietPepsi = createDrink("Diet","Pepsi", 20, 430, 125, 35);
+        JPanel dietPepsi = createDrink("Diet","Pepsi", 20, 430);
         panel.add(dietPepsi);
-        JPanel dietCrush = createDrink("Diet", "Crush",260, 430, 125, 35);
+        JPanel dietCrush = createDrink("Diet", "Crush",260, 430);
         panel.add(dietCrush);
-        JPanel dietRootBeer = createDrink("Diet Root","Beer", 500, 430, 125, 35);
+        JPanel dietRootBeer = createDrink("Diet Root","Beer", 500, 430);
         panel.add(dietRootBeer);
-        JPanel lemonade = createDrink("Lemonade","", 740, 430, 125, 35);
+        JPanel lemonade = createDrink("Lemonade","", 740, 430);
         panel.add(lemonade);
 
         return panel;
     }
     //Method to create each drink
-    private JPanel createDrink(String name1, String name2, int panelX, int panelY, int labelX, int labelY){
+    private JPanel createDrink(String name1, String name2, int panelX, int panelY){
         //Creates and sets the name for the panel
         JPanel newDrink = new JPanel();
         newDrink.setLayout(null);
         newDrink.setBounds(panelX, panelY, 220, 120);
         JLabel drinkLabel = new JLabel("<html>"+name1+"<br/>"+name2+"<html>");
         drinkLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-        drinkLabel.setBounds(labelX, labelY, 130, 80);
+        drinkLabel.setBounds(125, 35, 130, 80);
         newDrink.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -2092,7 +2087,7 @@ public class Frame extends JFrame{
                 totalCost += item.getPrice();
             }
             // Tax
-            totalCost += (totalCost *= 0.07f);
+            totalCost += (totalCost * 0.07f);
             totalLabel.setText("$"+totalCost);
         }
     }
@@ -2207,26 +2202,23 @@ public class Frame extends JFrame{
                 JButton removeButton = new JButton("Remove");
                 removeButton.setFont(new Font("Arial", Font.PLAIN, 17));
                 removeButton.setPreferredSize(new Dimension(100, 30));
-                removeButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        cart.remove(item);
-                        cartItems.remove(itemPanel); // Remove the item panel
-                        cartItems.revalidate(); // Refresh the panel
-                        cartItems.repaint();
+                removeButton.addActionListener(e1 -> {
+                    cart.remove(item);
+                    cartItems.remove(itemPanel); // Remove the item panel
+                    cartItems.revalidate(); // Refresh the panel
+                    cartItems.repaint();
 
-                        // Updates the Cost of the cart
-                        totalCost = 0;
-                        for(Item item : cart) {
-                            totalCost += item.getPrice();
-                        }
-                        // Tax
-                        totalCost += (totalCost *= 0.07f);
-                        totalLabel.setText("$"+totalCost);
-                        float taxFloat = totalCost*0.07f;
-                        String formatted = String.format("%.2f", taxFloat);
-                        tax.setText("Tax ............................................................. $"+formatted);
+                    // Updates the Cost of the cart
+                    totalCost = 0;
+                    for(Item item1 : cart) {
+                        totalCost += item1.getPrice();
                     }
+                    // Tax
+                    totalCost += (totalCost * 0.07f);
+                    totalLabel.setText("$"+totalCost);
+                    float taxFloat = totalCost*0.07f;
+                    String formatted = String.format("%.2f", taxFloat);
+                    tax.setText("Tax ............................................................. $"+formatted);
                 });
 
                 // Use GridBagConstraints to position components
@@ -2266,7 +2258,10 @@ public class Frame extends JFrame{
             gbc.weightx = 1.0;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            itemPanel.add(tax, gbc);
+            if(!taxCreated) {
+                itemPanel.add(tax, gbc);
+                taxCreated = true;
+            }
             gbc.weightx = 0.0;
             gbc.gridx = 1;
             itemPanel.add(removeButton, gbc);
@@ -2293,9 +2288,6 @@ public class Frame extends JFrame{
         cookiePrice.setBounds(425, 240, 50, 50);
         dessertPanel.add(cookiePrice);
         panel.add(dessertPanel);
-
-        //Adds image of cookie
-
 
         //Creates display text for selecting quantity of desserts
         JLabel count = new JLabel(dessertCounter+"");
@@ -2347,7 +2339,7 @@ public class Frame extends JFrame{
                 totalCost += item.getPrice();
             }
             // Tax
-            totalCost += (totalCost *= 0.07f);
+            totalCost += (totalCost * 0.07f);
             totalLabel.setText("$"+totalCost);
         });
         panel.add(addToCartButton);
@@ -2387,23 +2379,18 @@ public class Frame extends JFrame{
         cancelOrder.setBounds(350, 550, 200, 50);
         cancelOrder.setFont(new Font("Arial", Font.PLAIN, 25));
         cancelOrder.setBackground(new Color(0xeeeeee));
-        // TODO: Cancel Order Button
-        /*cancelOrder.addActionListener(e -> {
-            for(Item item: cart) {
-                cart.remove(item);
-            }
-            cartItems.revalidate(); // Refresh the panel
-            cartItems.repaint();
-        });*/
+        cancelOrder.addActionListener(e -> {
+            cart.clear();
+            cardLayout.show(mainPanel, "CUSTOMER_HOME");
+        });
         panel.add(cancelOrder);
-
         // Adds the Continue button to clear the cart
         JButton continueButton = new JButton("Continue");
         continueButton.setBounds(720, 550, 200, 50);
         continueButton.setFont(new Font("Arial", Font.PLAIN, 25));
         continueButton.setBackground(new Color(0xeeeeee));
         continueButton.addActionListener(e -> {
-            /*if(cart.isEmpty()) {
+            if(cart.isEmpty()) {
                 JOptionPane.showMessageDialog(mainPanel, "Add something to your cart!");
             } else {
                 switch (orderType) {
@@ -2414,17 +2401,7 @@ public class Frame extends JFrame{
                         cardLayout.show(mainPanel, "INSTORE_PAYMENT");
                     }
                 }
-            }*/
-            switch (orderType) {
-                case "delivery", "pickup" -> {
-                    cardLayout.show(mainPanel, "ONLINE_PAYMENT");
-                }
-                default -> {
-                    cardLayout.show(mainPanel, "INSTORE_PAYMENT");
-                }
             }
-
-
         });
         panel.add(continueButton);
 
@@ -2450,9 +2427,6 @@ public class Frame extends JFrame{
         JTextField cardNumText = new JTextField();
         cardNumText.setBounds(390, 187, 250, 50);
         cardNumText.setFont(new Font("Arial", Font.PLAIN, 24));
-        /*if(null != customer.getStreet()) {
-            streetText.setText(customer.getStreet());
-        }*/
         panel.add(cardNumText);
         // Expiration Date
         JLabel expDate = new JLabel("Expiration Date");
@@ -2462,9 +2436,6 @@ public class Frame extends JFrame{
         JTextField expDateText = new JTextField();
         expDateText.setBounds(390, 267, 250, 50);
         expDateText.setFont(new Font("Arial", Font.PLAIN, 24));
-        /*if(null != customer.getCity()) {
-            cityText.setText(customer.getCity());
-        }*/
         panel.add(expDateText);
         // CVV
         JLabel cvv = new JLabel("CVV");
@@ -2474,9 +2445,6 @@ public class Frame extends JFrame{
         JTextField cvvText = new JTextField();
         cvvText.setBounds(390, 347, 250, 50);
         cvvText.setFont(new Font("Arial", Font.PLAIN, 24));
-        /*if(null != customer.getState()) {
-            stateText.setText(customer.getState());
-        }*/
         panel.add(cvvText);
 
         // Adds the complete order button to create the account.
@@ -2484,17 +2452,14 @@ public class Frame extends JFrame{
         completeOrderButton.setBounds(getWidth()/2-80, 500, 190, 70);
         completeOrderButton.setFont(new Font("Arial", Font.PLAIN, 20));
         completeOrderButton.addActionListener(e -> {
-            switch (orderType) {
-                case "delivery" -> {
-                    completionText.setText("<html>Your order is complete!</br>It will be delivered to:</br>"+endStreetText+"</br>"+endCityText+", "+endStateText+"</br>"+endZipText+"</br>In 20 minutes</html>");
+            if(cardNumText.getText().isEmpty() || expDateText.getText().isEmpty() || cvvText.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(mainPanel, "Invalid: Missing Component");
+            } else {
+                if ("delivery".equals(orderType)) {
+                    completionText.setText("<html>Your order is complete!</br>It will be delivered to:</br>" + endStreetText + "</br>" + endCityText + ", " + endStateText + "</br>" + endZipText + "</br>In 20 minutes</html>");
                     cardLayout.show(mainPanel, "DELIVERY_FINISH");
-                }
-                case "pickup" -> {
+                } else {
                     cardLayout.show(mainPanel, "PICKUP_FINISH");
-                }
-                default -> {
-                    // Never Happens
-                    cardLayout.show(mainPanel, "INSTORE_FINISH");
                 }
             }
         });
@@ -2610,9 +2575,7 @@ public class Frame extends JFrame{
         JButton exitButton = new JButton("Exit");
         exitButton.setBounds(180, 470, 150, 70);
         exitButton.setFont(new Font("Arial", Font.PLAIN, 30));
-        exitButton.addActionListener(e -> {
-            cardLayout.show(mainPanel, "CUSTOMER_HOME");
-        });
+        exitButton.addActionListener(e -> cardLayout.show(mainPanel, "CUSTOMER_HOME"));
         panel.add(exitButton);
 
         return panel;
@@ -2644,9 +2607,7 @@ public class Frame extends JFrame{
         JButton exitButton = new JButton("Exit");
         exitButton.setBounds(180, 470, 150, 70);
         exitButton.setFont(new Font("Arial", Font.PLAIN, 30));
-        exitButton.addActionListener(e -> {
-            cardLayout.show(mainPanel, "CUSTOMER_HOME");
-        });
+        exitButton.addActionListener(e -> cardLayout.show(mainPanel, "CUSTOMER_HOME"));
         panel.add(exitButton);
 
         return panel;
@@ -2681,9 +2642,7 @@ public class Frame extends JFrame{
         JButton exitButton = new JButton("Exit");
         exitButton.setBounds(180, 470, 150, 70);
         exitButton.setFont(new Font("Arial", Font.PLAIN, 30));
-        exitButton.addActionListener(e -> {
-            cardLayout.show(mainPanel, "CUSTOMER_HOME");
-        });
+        exitButton.addActionListener(e -> cardLayout.show(mainPanel, "CUSTOMER_HOME"));
         panel.add(exitButton);
 
         return panel;
