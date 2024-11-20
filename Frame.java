@@ -3,11 +3,19 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Frame --- defines frame; creates the UI and adds functionality
+ * the attributes defined are mostly variables defined here because their functionality
+ * requires them to be global
+ */
 public class Frame extends JFrame{
+    // The Frame uses CardLayout so that each screen can be made as a panel and buttons are used to swap between them
     private final CardLayout cardLayout;
+    // mainPanel acts as a base panel that the other panels can be added on top of
     private final JPanel mainPanel;
     private Customer customer;
     private String orderType = "";
@@ -28,7 +36,7 @@ public class Frame extends JFrame{
     private final JLabel completionText = new JLabel();
     private Receipt receiptPanel = new Receipt();
     private final File database = new File("Customer DataBase.txt");
-    private boolean taxCreated = false;
+    private final DecimalFormat df = new DecimalFormat("#.00");
 
     Frame() {
         // Sets up the frame
@@ -49,7 +57,6 @@ public class Frame extends JFrame{
         mainPanel = new JPanel(cardLayout);
 
         // Creates the different screens (panels)
-        // EACH SCREEN REQUIRES ITS OWN METHOD. WRITE IT HERE
         JPanel titleScreen = createTitleScreen();
         JPanel customerLoginScreen = createCustomerLoginScreen();
         JPanel accountCreationScreen = createAccountCreationScreen();
@@ -68,8 +75,7 @@ public class Frame extends JFrame{
         JPanel pickupFinish = createPickupFinishScreen();
         JPanel inStoreFinish = createInStoreFinishScreen();
 
-        // Add screens to the main panel
-        // ADD EACH SCREEN TO THE MAIN PANEL WITH A UNIQUE NAME
+        // Add screens to the main panel with a unique name so buttons can reference them
         mainPanel.add(titleScreen, "TITLE");
         mainPanel.add(customerLoginScreen, "LOGIN_CUSTOMER");
         mainPanel.add(accountCreationScreen, "CREATE_ACCOUNT");
@@ -92,7 +98,7 @@ public class Frame extends JFrame{
         // Displays main panel
         add(mainPanel);
 
-        //makes sure a database exists and if it doesn't create a new one
+        // makes sure a database exists and if it doesn't create a new one
         try{
             if (!database.exists()){
                 database.createNewFile();
@@ -103,6 +109,16 @@ public class Frame extends JFrame{
         }
     }
 
+    /**
+     * Creates the red banner that appears at the top of every screen.
+     * The banner has the option to include a back button, login button, and an account button.
+     * @param title String for title to be shown at the top.
+     * @param backButton boolean for back button.
+     * @param logoutButton boolean for login button.
+     * @param accountButton boolean for account button.
+     * @param previousScreen String to reference previous screen, or screen that the back button transfers to.
+     * @return Returns a JPanel.
+     */
     private JPanel createRedBanner(String title, boolean backButton, boolean logoutButton, boolean accountButton, String previousScreen) {
         // Creates the red banner.
         JPanel redPanel = new JPanel();
@@ -166,6 +182,10 @@ public class Frame extends JFrame{
         return redPanel;
     }
 
+    /**
+     * Creates the title screen to show store information and begin the process
+     * @return Returns a JPanel.
+     */
     private JPanel createTitleScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -204,6 +224,11 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates customer login screen that allows the user to login with a phone number
+     * and links to the account creation screen.
+     * @return Returns a JPanel.
+     */
     private JPanel createCustomerLoginScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -307,6 +332,10 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the admin login screen which allows the user to login with a password.
+     * @return Returns a JPanel.
+     */
     private JPanel createAdminLoginScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -359,6 +388,11 @@ public class Frame extends JFrame{
         return panel;
     }
 
+
+    /**
+     * Creates the title screen to show store information and begin the process
+     * @return Returns a JPanel.
+     */
     private JPanel createAccountCreationScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -509,6 +543,11 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the customer home screen. From here, the user can begin their order in three different modalities:
+     * Delivery, Pickup, and In-Store.
+     * @return Returns a JPanel.
+     */
     private JPanel createCustomerHome() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -564,6 +603,10 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the account information screen that the user can go to alter their information
+     * @return Returns a JPanel.
+     */
     private JPanel createAccountInfo() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -711,6 +754,11 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the address input screen for the delivery order process.
+     * The user can input a street, city, state, and zipcode.
+     * @return Returns a JPanel.
+     */
     private JPanel createAddressInput() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -779,6 +827,11 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the pizza menu screen. The user can add a pizza of a certain crust type, size, and with
+     * a choice of nine different toppings. The user can change how many are added and add them to the cart.
+     * @return Returns a JPanel.
+     */
     private JPanel createPizzaMenu() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -968,7 +1021,9 @@ public class Frame extends JFrame{
         toppingsText.setFont(new Font("Arial", Font.PLAIN, 30));
         toppingsText.setBounds(700, 250, 150, 50);
         panel.add(toppingsText);
-        boolean[] toppings = new boolean[9]; // Instantiates the toppings array here to that the mouseListeners below can alter the topping choices
+
+        // Instantiates the toppings array here to that the mouseListeners below can alter the topping choices
+        boolean[] toppings = new boolean[9];
 
         JPanel cheesePanel = new JPanel();
         cheesePanel.setLayout(null);
@@ -1255,7 +1310,7 @@ public class Frame extends JFrame{
                     }
                     // Tax
                     totalCost += (totalCost * 0.07f);
-                    totalLabel.setText("$"+totalCost);
+                    totalLabel.setText("$"+df.format(totalCost));
                     float taxFloat = totalCost*0.07f;
                     String formatted = String.format("%.2f", taxFloat);
                     tax.setText("Tax ............................................................. $"+formatted);
@@ -1298,10 +1353,7 @@ public class Frame extends JFrame{
             gbc.weightx = 1.0;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            if(!taxCreated) {
-                itemPanel.add(tax, gbc);
-                taxCreated = true;
-            }
+            itemPanel.add(tax, gbc);
             gbc.weightx = 0.0;
             gbc.gridx = 1;
             itemPanel.add(removeButton, gbc);
@@ -1403,7 +1455,7 @@ public class Frame extends JFrame{
                 }
                 // Tax
                 totalCost += (totalCost * 0.07f);
-                totalLabel.setText("$"+totalCost);
+                totalLabel.setText("$"+df.format(totalCost));
             }
             // Resets Selection
             crustGroup.clearSelection();
@@ -1446,6 +1498,10 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the side menu scree. The user has a choice of two sides and can change how many they want to add to their cart.
+     * @return Returns a JPanel.
+     */
     private JPanel createSidesMenu() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -1569,7 +1625,7 @@ public class Frame extends JFrame{
                     }
                     // Tax
                     totalCost += (totalCost * 0.07f);
-                    totalLabel.setText("$"+totalCost);
+                    totalLabel.setText("$"+df.format(totalCost));
                     float taxFloat = totalCost*0.07f;
                     String formatted = String.format("%.2f", taxFloat);
                     tax.setText("Tax ............................................................. $"+formatted);
@@ -1612,10 +1668,7 @@ public class Frame extends JFrame{
             gbc.weightx = 1.0;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            if(!taxCreated) {
-                itemPanel.add(tax, gbc);
-                taxCreated = true;
-            }
+            itemPanel.add(tax, gbc);
             gbc.weightx = 0.0;
             gbc.gridx = 1;
             itemPanel.add(removeButton, gbc);
@@ -1771,6 +1824,10 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the drinks menu screen. The user has a choice of 8 different drinks of three different sizes.
+     * @return Returns a JPanel.
+     */
     private JPanel createDrinksMenu() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -1894,7 +1951,7 @@ public class Frame extends JFrame{
                     }
                     // Tax
                     totalCost += (totalCost * 0.07f);
-                    totalLabel.setText("$"+totalCost);
+                    totalLabel.setText("$"+df.format(totalCost));
                     float taxFloat = totalCost*0.07f;
                     String formatted = String.format("%.2f", taxFloat);
                     tax.setText("Tax ............................................................. $"+formatted);
@@ -1937,10 +1994,7 @@ public class Frame extends JFrame{
             gbc.weightx = 1.0;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            if(!taxCreated) {
-                itemPanel.add(tax, gbc);
-                taxCreated = true;
-            }
+            itemPanel.add(tax, gbc);
             gbc.weightx = 0.0;
             gbc.gridx = 1;
             itemPanel.add(removeButton, gbc);
@@ -1978,7 +2032,15 @@ public class Frame extends JFrame{
 
         return panel;
     }
-    //Method to create each drink
+
+    /**
+     * Creates the panel for each drink. These panels are used on the drink menu screen.
+     * @param name1 first part of drink name.
+     * @param name2 second part of drink name.
+     * @param panelX panel location on the x-axis
+     * @param panelY panel location on the y-axis
+     * @return Returns a JPanel.
+     */
     private JPanel createDrink(String name1, String name2, int panelX, int panelY){
         //Creates and sets the name for the panel
         JPanel newDrink = new JPanel();
@@ -2009,6 +2071,12 @@ public class Frame extends JFrame{
 
         return newDrink;
     }
+
+    /**
+     * Generates the JOptionPane that appears when a drink is selected on the drink screen menu.
+     * The option pane offers the choice of three different sizes and to choose the amount.
+     * @param nameOfDrink string with the name of the drink.
+     */
     private void drinkPopup(String nameOfDrink) {
         // Create components
         JComboBox<String> sizeComboBox = new JComboBox<>(new String[]{"Small", "Medium", "Large"});
@@ -2092,6 +2160,10 @@ public class Frame extends JFrame{
         }
     }
 
+    /**
+     * Creates the dessert screen. The user has an option to add any amount of one dessert.
+     * @return Returns a JPanel.
+     */
     private JPanel createDessertMenu() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -2215,7 +2287,7 @@ public class Frame extends JFrame{
                     }
                     // Tax
                     totalCost += (totalCost * 0.07f);
-                    totalLabel.setText("$"+totalCost);
+                    totalLabel.setText("$"+df.format(totalCost));
                     float taxFloat = totalCost*0.07f;
                     String formatted = String.format("%.2f", taxFloat);
                     tax.setText("Tax ............................................................. $"+formatted);
@@ -2258,10 +2330,7 @@ public class Frame extends JFrame{
             gbc.weightx = 1.0;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            if(!taxCreated) {
-                itemPanel.add(tax, gbc);
-                taxCreated = true;
-            }
+            itemPanel.add(tax, gbc);
             gbc.weightx = 0.0;
             gbc.gridx = 1;
             itemPanel.add(removeButton, gbc);
@@ -2348,6 +2417,11 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the cart screen where the user can view every item that was added and the price.
+     * The user can also remove items from the cart and select continue to pay for the order.
+     * @return Returns a JPanel.
+     */
     private JPanel createCartScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -2380,10 +2454,13 @@ public class Frame extends JFrame{
         cancelOrder.setFont(new Font("Arial", Font.PLAIN, 25));
         cancelOrder.setBackground(new Color(0xeeeeee));
         cancelOrder.addActionListener(e -> {
+            cardLayout.show(mainPanel, "Title");
             cart.clear();
-            cardLayout.show(mainPanel, "CUSTOMER_HOME");
+            cartItems.revalidate();
+            cartItems.repaint();
         });
         panel.add(cancelOrder);
+
         // Adds the Continue button to clear the cart
         JButton continueButton = new JButton("Continue");
         continueButton.setBounds(720, 550, 200, 50);
@@ -2394,12 +2471,8 @@ public class Frame extends JFrame{
                 JOptionPane.showMessageDialog(mainPanel, "Add something to your cart!");
             } else {
                 switch (orderType) {
-                    case "delivery", "pickup" -> {
-                        cardLayout.show(mainPanel, "ONLINE_PAYMENT");
-                    }
-                    default -> {
-                        cardLayout.show(mainPanel, "INSTORE_PAYMENT");
-                    }
+                    case "delivery", "pickup" -> cardLayout.show(mainPanel, "ONLINE_PAYMENT");
+                    default -> cardLayout.show(mainPanel, "INSTORE_PAYMENT");
                 }
             }
         });
@@ -2408,6 +2481,11 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the Online payment screen where the user can enter their payment details:
+     * card number, expiration date, and CVV.
+     * @return Returns a JPanel.
+     */
     private JPanel createOnlinePaymentScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -2468,6 +2546,11 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the In-Store payment screen where the user can either enter their card payment details,
+     * or an amount of cash or by check.
+     * @return Returns a JPanel.
+     */
     private JPanel createInStorePaymentScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -2487,10 +2570,8 @@ public class Frame extends JFrame{
         JTextField cardNumText = new JTextField();
         cardNumText.setBounds(100, 187, 250, 50);
         cardNumText.setFont(new Font("Arial", Font.PLAIN, 24));
-        /*if(null != customer.getStreet()) {
-            streetText.setText(customer.getStreet());
-        }*/
         panel.add(cardNumText);
+
         // Expiration Date
         JLabel expDate = new JLabel("Expiration Date");
         expDate.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -2499,10 +2580,8 @@ public class Frame extends JFrame{
         JTextField expDateText = new JTextField();
         expDateText.setBounds(100, 267, 250, 50);
         expDateText.setFont(new Font("Arial", Font.PLAIN, 24));
-        /*if(null != customer.getCity()) {
-            cityText.setText(customer.getCity());
-        }*/
         panel.add(expDateText);
+
         // CVV
         JLabel cvv = new JLabel("CVV");
         cvv.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -2511,10 +2590,8 @@ public class Frame extends JFrame{
         JTextField cvvText = new JTextField();
         cvvText.setBounds(100, 347, 250, 50);
         cvvText.setFont(new Font("Arial", Font.PLAIN, 24));
-        /*if(null != customer.getState()) {
-            stateText.setText(customer.getState());
-        }*/
         panel.add(cvvText);
+
         // Cash Amount
         JLabel cash = new JLabel("Enter Cash Amount");
         cash.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -2524,6 +2601,7 @@ public class Frame extends JFrame{
         cashText.setBounds(600, 217, 250, 50);
         cashText.setFont(new Font("Arial", Font.PLAIN, 24));
         panel.add(cashText);
+
         // Check Amount
         JLabel check = new JLabel("Enter Check Amount");
         check.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -2539,16 +2617,25 @@ public class Frame extends JFrame{
         completeOrderButton.setBounds(getWidth()/2-80, 500, 190, 70);
         completeOrderButton.setFont(new Font("Arial", Font.PLAIN, 20));
         completeOrderButton.addActionListener(e -> {
-            for(Item item : cart) {
-                receiptPanel.addItem(item.toString(), item.getPrice());
+            if((cardNumText.getText().isEmpty() || expDateText.getText().isEmpty() || cvvText.getText().isEmpty()) || (checkText.getText().isEmpty() && cashText.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(mainPanel, "Please enter a payment method");
+            } else {
+                for(Item item : cart) {
+                    receiptPanel.addItem(item.toString(), item.getPrice());
+                }
+                cardLayout.show(mainPanel, "INSTORE_FINISH");
             }
-            cardLayout.show(mainPanel, "INSTORE_FINISH");
         });
         panel.add(completeOrderButton);
 
         return panel;
     }
 
+    /**
+     * Creates the final screen for the delivery order process.
+     * The user can exit to go back to the home screen.
+     * @return Returns a JPanel.
+     */
     private JPanel createDeliveryFinishScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -2581,6 +2668,11 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the final screen for the pickup order process.
+     * The user can exit to go back to the home screen.
+     * @return Returns a JPanel.
+     */
     private JPanel createPickupFinishScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -2613,6 +2705,11 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the final screen for the in-store order process.
+     * The user can exit to go back to the home screen.
+     * @return Returns a JPanel.
+     */
     private JPanel createInStoreFinishScreen() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -2648,8 +2745,15 @@ public class Frame extends JFrame{
         return panel;
     }
 
+    /**
+     * Creates the receipt panel that is visible on the last slide of each order process.
+     * @return Returns a JPanel.
+     */
     private JPanel createReceiptPanel() {
         receiptPanel = new Receipt();
+        for(Item item : cart) {
+            receiptPanel.addItem(item.toString(), item.getPrice());
+        }
         return receiptPanel;
     }
 }
