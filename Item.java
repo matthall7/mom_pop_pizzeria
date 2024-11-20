@@ -1,22 +1,24 @@
+import java.util.Arrays;
+
 public class Item {
     private String type;
     private String crust;
     private String size;
+    private String side;
+    private String drink;
     private boolean[] toppings;
-    private int amount;
     private float price;
-    Item(String crust, String size, boolean[] toppings, int amount) {
+    Item(String crust, String size, boolean[] toppings) {
         type = "pizza";
         this.crust = crust;
         this.size = size;
-        this.toppings = toppings;
-        this.amount = amount;
+        this.toppings = Arrays.copyOf(toppings, toppings.length);
 
         // Calculates the price
         price = 0;
         boolean atLeastOne = false;
         switch (size) {
-            case "small" -> {
+            case "Small" -> {
                 price += 5;
                 for(int i=1; i<toppings.length; i++) {
                     if(toppings[i]) {
@@ -28,7 +30,7 @@ public class Item {
                     price -= 0.75f;
                 }
             }
-            case "medium" -> {
+            case "Medium" -> {
                 price += 7;
                 for(int i=1; i<toppings.length; i++) {
                     if(toppings[i]) {
@@ -40,7 +42,7 @@ public class Item {
                     price -= 1f;
                 }
             }
-            case "large" -> {
+            case "Large" -> {
                 price += 9;
                 for(int i=1; i<toppings.length; i++) {
                     if(toppings[i]) {
@@ -65,23 +67,28 @@ public class Item {
                 }
             }
         }
-        price *= amount;
     }
 
-    Item(String side, int amount) {
+    Item(String side) {
         type = "side";
-        this.amount = amount;
+        this.side = side;
+        if(side.equals("breadStick")) {
+            price = 4f;
+        } else {
+            price = 2f;
+        }
     }
 
-    Item(String drink, String size, int amount) {
+    Item(String drink, String size) {
         type = "drink";
+        this.drink = drink;
         this.size = size;
-        this.amount = amount;
+        price = 1.75f;
     }
 
-    Item(int amount) {
+    Item() {
         type = "dessert";
-        this.amount = amount;
+        price = 4f;
     }
 
     @Override
@@ -90,18 +97,22 @@ public class Item {
             if(size.equals("Small")) {
                 return "<html>"+size+" "+crust+" Pizza ........................................ $5.00<br/>"+toppingsToText(size, toppings)+"</html>";
             } else if(size.equals("Medium")) {
-                return "<html>"+size+" "+crust+" Pizza ..................................... $7.00<br/>"+toppingsToText(size, toppings)+"</html>";
+                return "<html>"+size+" "+crust+" Pizza ................................. $7.00<br/>"+toppingsToText(size, toppings)+"</html>";
             } else if(size.equals("Large")) {
-                return "<html>"+size+" "+crust+" Pizza ........................................ $9.00<br/>"+toppingsToText(size, toppings)+"</html>";
+                return "<html>"+size+" "+crust+" Pizza .................................... $9.00<br/>"+toppingsToText(size, toppings)+"</html>";
             } else {
                 return "<html>"+size+" "+crust+" Pizza ............................ $11.00<br/>"+toppingsToText(size, toppings)+"</html>";
             }
         } else if(type.equals("side")) {
-            return "side";
+            if(side.equals("breadStick")) {
+                return "Breadsticks .......................................... $4.00";
+            } else {
+                return "Breadtick Bites ....................................... $2.00";
+            }
         } else if(type.equals("drink")) {
-            return "drink";
+            return size+" "+drink+"................................ $1.75";
         } else {
-            return "dessert";
+            return "Mega Chocolate Chip Cooke ...................... $4.00";
         }
     }
 
@@ -398,5 +409,13 @@ public class Item {
             }
         }
         return text;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
     }
 }
