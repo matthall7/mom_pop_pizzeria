@@ -23,20 +23,16 @@ public class Frame extends JFrame{
     private final JPanel cartItems = new JPanel();
     private final JScrollPane scrollPane = new JScrollPane(cartItems);
     private float totalCost = 0;
+    private float subtotal = 0;
     private final JLabel totalLabel = new JLabel("$0.00");
     JLabel tax = new JLabel("Tax ............................................................. $0.00");
     private int pizzaCounter = 1;
     private int dessertCounter = 1;
     private int bSticksCounter = 1;
     private int bitesCounter = 1;
-    private String endStreetText = "";
-    private String endCityText = "";
-    private String endStateText = "";
-    private String endZipText = "";
-    private final JLabel completionText = new JLabel();
     private Receipt receiptPanel = new Receipt();
     private final File database = new File("Customer DataBase.txt");
-    private final DecimalFormat df = new DecimalFormat("#.00");
+    private final DecimalFormat df = new DecimalFormat();
 
     Frame() {
         // Sets up the frame
@@ -97,6 +93,9 @@ public class Frame extends JFrame{
 
         // Displays main panel
         add(mainPanel);
+
+        // makes all decimal values two places
+        df.setMaximumFractionDigits(2);
 
         // makes sure a database exists and if it doesn't create a new one
         try{
@@ -225,7 +224,7 @@ public class Frame extends JFrame{
     }
 
     /**
-     * Creates customer login screen that allows the user to login with a phone number
+     * Creates customer login screen that allows the user to log in with a phone number
      * and links to the account creation screen.
      * @return Returns a JPanel.
      */
@@ -297,19 +296,18 @@ public class Frame extends JFrame{
         loginButton.addActionListener(e -> {
 
             try (BufferedReader br = new BufferedReader(new FileReader(database))) {
-            String line;
+                String line;
                 // Read the file line by line
                 boolean found = false;
                 while ((line = br.readLine()) != null) {
                     String[] data = line.split("\\|");
-                    System.out.println(data[0]);
                     if(data[0].equals(phoneNumberText.getText()))
                     {
                         found = true;
                         phoneNumberText.setText("");
                         if(data.length == 2)
                         {
-                        customer = new Customer(data[0], data[1]);
+                            customer = new Customer(data[0], data[1]);
 
                         }
                         else{
@@ -318,9 +316,9 @@ public class Frame extends JFrame{
 
                         cardLayout.show(mainPanel, "CUSTOMER_HOME");
                     }
-                    if(!found){
-                        JOptionPane.showMessageDialog(mainPanel, "Account Not Found");
-                    }
+                }
+                if(!found){
+                    JOptionPane.showMessageDialog(mainPanel, "Account Not Found");
                 }
             } catch (IOException f) {
                 f.printStackTrace();
@@ -333,7 +331,7 @@ public class Frame extends JFrame{
     }
 
     /**
-     * Creates the admin login screen which allows the user to login with a password.
+     * Creates the admin login screen which allows the user to log in with a password.
      * @return Returns a JPanel.
      */
     private JPanel createAdminLoginScreen() {
@@ -380,7 +378,7 @@ public class Frame extends JFrame{
             if(passwordText.getText().equals("123")) {
                 cardLayout.show(mainPanel, "CUSTOMER_HOME");
             } else {
-                JOptionPane.showMessageDialog(mainPanel, "Ivalid password");
+                JOptionPane.showMessageDialog(mainPanel, "Invalid password");
             }
         });
         panel.add(loginButton);
@@ -812,10 +810,6 @@ public class Frame extends JFrame{
         continueButton.setBounds(getWidth()/2-80, 500, 190, 70);
         continueButton.setFont(new Font("Arial", Font.PLAIN, 30));
         continueButton.addActionListener(e -> {
-            endStreetText = streetText.getText();
-            endCityText = cityText.getText();
-            endStateText = stateText.getText();
-            endZipText = zipcodeText.getText();
             if(streetText.getText().isEmpty() || cityText.getText().isEmpty() || streetText.getText().isEmpty() || zipcodeText.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(mainPanel, "Invalid: Missing Component");
             } else {
@@ -929,6 +923,7 @@ public class Frame extends JFrame{
         crustText.setBounds(50, 250, 100, 50);
         panel.add(crustText);
 
+        // Thin crust
         JLabel thinCrust = new JLabel("Thin");
         thinCrust.setFont(new Font("Arial", Font.PLAIN, 30));
         thinCrust.setBounds(25, 325, 120, 50);
@@ -939,6 +934,7 @@ public class Frame extends JFrame{
         thinCrustButton.setBackground(Color.WHITE);
         panel.add(thinCrustButton);
 
+        //Regular crust
         JLabel regularCrust = new JLabel("Regular");
         regularCrust.setFont(new Font("Arial", Font.PLAIN, 30));
         regularCrust.setBounds(25, 400, 120, 50);
@@ -949,6 +945,7 @@ public class Frame extends JFrame{
         regularCrustButton.setBackground(Color.WHITE);
         panel.add(regularCrustButton);
 
+        // Pan crust
         JLabel panCrust = new JLabel("Pan");
         panCrust.setFont(new Font("Arial", Font.PLAIN, 30));
         panCrust.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -959,6 +956,7 @@ public class Frame extends JFrame{
         panCrustButton.setBackground(Color.WHITE);
         panel.add(panCrustButton);
 
+        // Puts the buttons in a group
         ButtonGroup crustGroup = new ButtonGroup();
         crustGroup.add(thinCrustButton);
         crustGroup.add(regularCrustButton);
@@ -970,6 +968,7 @@ public class Frame extends JFrame{
         sizeText.setBounds(340, 250, 100, 50);
         panel.add(sizeText);
 
+        // Small
         JLabel smallSize = new JLabel("Small $5.00");
         smallSize.setFont(new Font("Arial", Font.PLAIN, 30));
         smallSize.setBounds(225, 305, 280, 50);
@@ -980,6 +979,7 @@ public class Frame extends JFrame{
         smallSizeButton.setBackground(Color.WHITE);
         panel.add(smallSizeButton);
 
+        // Medium
         JLabel mediumSize = new JLabel("Medium $7.00");
         mediumSize.setFont(new Font("Arial", Font.PLAIN, 30));
         mediumSize.setBounds(225, 365, 280, 50);
@@ -990,6 +990,7 @@ public class Frame extends JFrame{
         mediumSizeButton.setBackground(Color.WHITE);
         panel.add(mediumSizeButton);
 
+        // Large
         JLabel largeSize = new JLabel("Large $9.00");
         largeSize.setFont(new Font("Arial", Font.PLAIN, 30));
         largeSize.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -1000,6 +1001,7 @@ public class Frame extends JFrame{
         largeSizeButton.setBackground(Color.WHITE);
         panel.add(largeSizeButton);
 
+        // Extra Large
         JLabel extraLargeSize = new JLabel("Extra Large $12.00");
         extraLargeSize.setFont(new Font("Arial", Font.PLAIN, 30));
         extraLargeSize.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -1052,6 +1054,7 @@ public class Frame extends JFrame{
             }
         });
         panel.add(cheesePanel);
+
         JPanel hamPanel = new JPanel();
         hamPanel.setLayout(null);
         hamPanel.setBounds(725, 300, 110, 70);
@@ -1079,6 +1082,7 @@ public class Frame extends JFrame{
             }
         });
         panel.add(hamPanel);
+
         JPanel tomatoPanel = new JPanel();
         tomatoPanel.setLayout(null);
         tomatoPanel.setBounds(850, 300, 110, 70);
@@ -1134,6 +1138,7 @@ public class Frame extends JFrame{
             }
         });
         panel.add(pepperoniPanel);
+
         JPanel greenPepperPanel = new JPanel();
         greenPepperPanel.setLayout(null);
         greenPepperPanel.setBounds(725, 380, 110, 70);
@@ -1161,6 +1166,7 @@ public class Frame extends JFrame{
             }
         });
         panel.add(greenPepperPanel);
+
         JPanel mushroomPanel = new JPanel();
         mushroomPanel.setLayout(null);
         mushroomPanel.setBounds(850, 380, 110, 70);
@@ -1216,6 +1222,7 @@ public class Frame extends JFrame{
             }
         });
         panel.add(sausagePanel);
+
         JPanel onionPanel = new JPanel();
         onionPanel.setLayout(null);
         onionPanel.setBounds(725, 460, 110, 70);
@@ -1243,6 +1250,7 @@ public class Frame extends JFrame{
             }
         });
         panel.add(onionPanel);
+
         JPanel pineapplePanel = new JPanel();
         pineapplePanel.setLayout(null);
         pineapplePanel.setBounds(850, 460, 110, 70);
@@ -1285,6 +1293,7 @@ public class Frame extends JFrame{
         cartButton.setBackground(new Color(0xeeeeee));
         cartButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "CART");
+            // For every item in the cart, create a panel for them on the cart screen
             for(Item item : cart) {
                 JPanel itemPanel = new JPanel(new GridBagLayout());
                 itemPanel.setPreferredSize(new Dimension(800, 200)); // Set fixed size for each item
@@ -1305,15 +1314,23 @@ public class Frame extends JFrame{
 
                     // Updates the Cost of the cart
                     totalCost = 0;
+                    subtotal = 0;
+                    totalCost += item.getPrice();
+                    subtotal += item.getPrice();
                     for(Item item1 : cart) {
                         totalCost += item1.getPrice();
+                        subtotal += item1.getPrice();
                     }
                     // Tax
+                    float taxFloat = totalCost - subtotal;
+                    taxFloat = Float.parseFloat(df.format(taxFloat));
+                    tax.setText("Tax ............................................................. $"+taxFloat);
+                    tax.setHorizontalAlignment(SwingConstants.LEFT);
+                    tax.setFont(new Font("Arial", Font.PLAIN, 30));
                     totalCost += (totalCost * 0.07f);
                     totalLabel.setText("$"+df.format(totalCost));
-                    float taxFloat = totalCost*0.07f;
-                    String formatted = String.format("%.2f", taxFloat);
-                    tax.setText("Tax ............................................................. $"+formatted);
+                    cartItems.revalidate(); // Refresh the panel
+                    cartItems.repaint();
                 });
 
                 // Use GridBagConstraints to position components
@@ -1333,16 +1350,18 @@ public class Frame extends JFrame{
                 cartItems.revalidate();
                 cartItems.repaint();
             }
-            JPanel itemPanel = new JPanel(new GridBagLayout());
-            itemPanel.setPreferredSize(new Dimension(800, 100)); // Set fixed size for each item
-            itemPanel.setMaximumSize(new Dimension(800, 200)); // Prevent resizing
-            float taxFloat =totalCost*0.07f;
-            String formatted = String.format("%.2f", taxFloat);
-            JLabel tax = new JLabel("Tax ............................................................. $"+formatted);
+
+            //Initializes the tax in cart
+            float taxFloat = totalCost - subtotal;
+            taxFloat = Float.parseFloat(df.format(taxFloat));
+            JLabel tax = new JLabel("Tax ............................................................. $"+taxFloat);
             tax.setHorizontalAlignment(SwingConstants.LEFT);
             tax.setFont(new Font("Arial", Font.PLAIN, 30));
 
             // Invisible remove button so that Tax is formatted on the Cart screen correctly
+            JPanel itemPanel = new JPanel(new GridBagLayout());
+            itemPanel.setPreferredSize(new Dimension(800, 100));
+            itemPanel.setMaximumSize(new Dimension(800, 200));
             JButton removeButton = new JButton("Remove");
             removeButton.setFont(new Font("Arial", Font.PLAIN, 17));
             removeButton.setPreferredSize(new Dimension(100, 30));
@@ -1450,7 +1469,9 @@ public class Frame extends JFrame{
 
                 // Updates the Cost of the cart
                 totalCost = 0;
+                subtotal = 0;
                 for(Item item : cart) {
+                    subtotal += item.getPrice();
                     totalCost += item.getPrice();
                 }
                 // Tax
@@ -1620,15 +1641,21 @@ public class Frame extends JFrame{
 
                     // Updates the Cost of the cart
                     totalCost = 0;
+                    subtotal = 0;
                     for(Item item1 : cart) {
                         totalCost += item1.getPrice();
+                        subtotal += item1.getPrice();
                     }
                     // Tax
+                    float taxFloat = totalCost - subtotal;
+                    taxFloat = Float.parseFloat(df.format(taxFloat));
+                    tax.setText("Tax ............................................................. $"+taxFloat);
+                    tax.setHorizontalAlignment(SwingConstants.LEFT);
+                    tax.setFont(new Font("Arial", Font.PLAIN, 30));
                     totalCost += (totalCost * 0.07f);
                     totalLabel.setText("$"+df.format(totalCost));
-                    float taxFloat = totalCost*0.07f;
-                    String formatted = String.format("%.2f", taxFloat);
-                    tax.setText("Tax ............................................................. $"+formatted);
+                    cartItems.revalidate(); // Refresh the panel
+                    cartItems.repaint();
                 });
 
                 // Use GridBagConstraints to position components
@@ -1648,9 +1675,7 @@ public class Frame extends JFrame{
                 cartItems.revalidate();
                 cartItems.repaint();
             }
-            JPanel itemPanel = new JPanel(new GridBagLayout());
-            itemPanel.setPreferredSize(new Dimension(800, 100)); // Set fixed size for each item
-            itemPanel.setMaximumSize(new Dimension(800, 200)); // Prevent resizing
+
             float taxFloat =totalCost*0.07f;
             String formatted = String.format("%.2f", taxFloat);
             JLabel tax = new JLabel("Tax ............................................................. $"+formatted);
@@ -1658,6 +1683,9 @@ public class Frame extends JFrame{
             tax.setFont(new Font("Arial", Font.PLAIN, 30));
 
             // Invisible remove button so that Tax is formatted on the Cart screen correctly
+            JPanel itemPanel = new JPanel(new GridBagLayout());
+            itemPanel.setPreferredSize(new Dimension(800, 100)); // Set fixed size for each item
+            itemPanel.setMaximumSize(new Dimension(800, 200));
             JButton removeButton = new JButton("Remove");
             removeButton.setFont(new Font("Arial", Font.PLAIN, 17));
             removeButton.setPreferredSize(new Dimension(100, 30));
@@ -1693,7 +1721,7 @@ public class Frame extends JFrame{
         breadsticks.add(bSticksLabel);
 
         //Creates description for breadsticks
-        JLabel bSticksDesc = new JLabel("Soft and buttery, served with cheese dip.");
+        JLabel bSticksDesc = new JLabel("Soft and buttery breadsticks baked fresh");
         bSticksDesc.setFont(new Font("Arial", Font.PLAIN, 16));
         bSticksDesc.setBounds(125,50,450,30);
         breadsticks.add(bSticksDesc);
@@ -1946,15 +1974,21 @@ public class Frame extends JFrame{
 
                     // Updates the Cost of the cart
                     totalCost = 0;
+                    subtotal = 0;
                     for(Item item1 : cart) {
                         totalCost += item1.getPrice();
+                        subtotal += item1.getPrice();
                     }
                     // Tax
+                    float taxFloat = totalCost - subtotal;
+                    taxFloat = Float.parseFloat(df.format(taxFloat));
+                    tax.setText("Tax ............................................................. $"+taxFloat);
+                    tax.setHorizontalAlignment(SwingConstants.LEFT);
+                    tax.setFont(new Font("Arial", Font.PLAIN, 30));
                     totalCost += (totalCost * 0.07f);
                     totalLabel.setText("$"+df.format(totalCost));
-                    float taxFloat = totalCost*0.07f;
-                    String formatted = String.format("%.2f", taxFloat);
-                    tax.setText("Tax ............................................................. $"+formatted);
+                    cartItems.revalidate(); // Refresh the panel
+                    cartItems.repaint();
                 });
 
                 // Use GridBagConstraints to position components
@@ -1977,6 +2011,7 @@ public class Frame extends JFrame{
             JPanel itemPanel = new JPanel(new GridBagLayout());
             itemPanel.setPreferredSize(new Dimension(800, 100)); // Set fixed size for each item
             itemPanel.setMaximumSize(new Dimension(800, 200)); // Prevent resizing
+
             float taxFloat =totalCost*0.07f;
             String formatted = String.format("%.2f", taxFloat);
             JLabel tax = new JLabel("Tax ............................................................. $"+formatted);
@@ -2149,14 +2184,6 @@ public class Frame extends JFrame{
             for(int i=0; i<Integer.parseInt(quantity); i++) {
                 cart.add(new Item(nameOfDrink, size));
             }
-            // Updates the Cost of the cart
-            totalCost = 0;
-            for(Item item : cart) {
-                totalCost += item.getPrice();
-            }
-            // Tax
-            totalCost += (totalCost * 0.07f);
-            totalLabel.setText("$"+totalCost);
         }
     }
 
@@ -2282,15 +2309,21 @@ public class Frame extends JFrame{
 
                     // Updates the Cost of the cart
                     totalCost = 0;
+                    subtotal = 0;
                     for(Item item1 : cart) {
                         totalCost += item1.getPrice();
+                        subtotal += item1.getPrice();
                     }
                     // Tax
+                    float taxFloat = totalCost - subtotal;
+                    taxFloat = Float.parseFloat(df.format(taxFloat));
+                    tax.setText("Tax ............................................................. $"+taxFloat);
+                    tax.setHorizontalAlignment(SwingConstants.LEFT);
+                    tax.setFont(new Font("Arial", Font.PLAIN, 30));
                     totalCost += (totalCost * 0.07f);
                     totalLabel.setText("$"+df.format(totalCost));
-                    float taxFloat = totalCost*0.07f;
-                    String formatted = String.format("%.2f", taxFloat);
-                    tax.setText("Tax ............................................................. $"+formatted);
+                    cartItems.revalidate(); // Refresh the panel
+                    cartItems.repaint();
                 });
 
                 // Use GridBagConstraints to position components
@@ -2310,9 +2343,6 @@ public class Frame extends JFrame{
                 cartItems.revalidate();
                 cartItems.repaint();
             }
-            JPanel itemPanel = new JPanel(new GridBagLayout());
-            itemPanel.setPreferredSize(new Dimension(800, 100)); // Set fixed size for each item
-            itemPanel.setMaximumSize(new Dimension(800, 200)); // Prevent resizing
             float taxFloat =totalCost*0.07f;
             String formatted = String.format("%.2f", taxFloat);
             JLabel tax = new JLabel("Tax ............................................................. $"+formatted);
@@ -2320,6 +2350,9 @@ public class Frame extends JFrame{
             tax.setFont(new Font("Arial", Font.PLAIN, 30));
 
             // Invisible remove button so that Tax is formatted on the Cart screen correctly
+            JPanel itemPanel = new JPanel(new GridBagLayout());
+            itemPanel.setPreferredSize(new Dimension(800, 100)); // Set fixed size for each item
+            itemPanel.setMaximumSize(new Dimension(800, 200)); // Prevent resizing
             JButton removeButton = new JButton("Remove");
             removeButton.setFont(new Font("Arial", Font.PLAIN, 17));
             removeButton.setPreferredSize(new Dimension(100, 30));
@@ -2448,6 +2481,24 @@ public class Frame extends JFrame{
         totalLabel.setBackground(new Color(0xeeeeee));
         panel.add(totalLabel);
 
+        // Updates the Cost of the cart
+        totalCost = 0;
+        subtotal = 0;
+        for(Item item1 : cart) {
+            totalCost += item1.getPrice();
+            subtotal += item1.getPrice();
+        }
+        // Tax
+        float taxFloat = totalCost - subtotal;
+        taxFloat = Float.parseFloat(df.format(taxFloat));
+        tax.setText("Tax ............................................................. $"+taxFloat);
+        tax.setHorizontalAlignment(SwingConstants.LEFT);
+        tax.setFont(new Font("Arial", Font.PLAIN, 30));
+        totalCost += (totalCost * 0.07f);
+        totalLabel.setText("$"+df.format(totalCost));
+        cartItems.revalidate(); // Refresh the panel
+        cartItems.repaint();
+
         // Adds the Cancel Order button to clear the cart
         JButton cancelOrder = new JButton("Cancel Order");
         cancelOrder.setBounds(350, 550, 200, 50);
@@ -2533,8 +2584,10 @@ public class Frame extends JFrame{
             if(cardNumText.getText().isEmpty() || expDateText.getText().isEmpty() || cvvText.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(mainPanel, "Invalid: Missing Component");
             } else {
+                for(Item item : cart) {
+                    receiptPanel.addItem(item.toString(), item.getPrice());
+                }
                 if ("delivery".equals(orderType)) {
-                    completionText.setText("<html>Your order is complete!</br>It will be delivered to:</br>" + endStreetText + "</br>" + endCityText + ", " + endStateText + "</br>" + endZipText + "</br>In 20 minutes</html>");
                     cardLayout.show(mainPanel, "DELIVERY_FINISH");
                 } else {
                     cardLayout.show(mainPanel, "PICKUP_FINISH");
@@ -2617,7 +2670,9 @@ public class Frame extends JFrame{
         completeOrderButton.setBounds(getWidth()/2-80, 500, 190, 70);
         completeOrderButton.setFont(new Font("Arial", Font.PLAIN, 20));
         completeOrderButton.addActionListener(e -> {
-            if((cardNumText.getText().isEmpty() || expDateText.getText().isEmpty() || cvvText.getText().isEmpty()) || (checkText.getText().isEmpty() && cashText.getText().isEmpty())) {
+
+
+            if((cardNumText.getText().isEmpty() && expDateText.getText().isEmpty() && cvvText.getText().isEmpty()) && (checkText.getText().isEmpty() && cashText.getText().isEmpty())) {
                 JOptionPane.showMessageDialog(mainPanel, "Please enter a payment method");
             } else {
                 for(Item item : cart) {
@@ -2625,6 +2680,8 @@ public class Frame extends JFrame{
                 }
                 cardLayout.show(mainPanel, "INSTORE_FINISH");
             }
+
+
         });
         panel.add(completeOrderButton);
 
@@ -2647,15 +2704,15 @@ public class Frame extends JFrame{
         panel.add(redPanel);
 
         // Adds the text show when the order is completed
-        completionText.setText("<html>Your order is complete!</br>It will be delivered to: </br>"+endStreetText+" </br>"+endCityText+", "+endStateText+" </br>"+endZipText+"</br> In 20 minutes</html>");
+        JLabel completionText = new JLabel("<html>Your order is complete!</br> It will be delivered in</br> 20 minutes!</html>");
         completionText.setFont(new Font("Arial", Font.PLAIN, 30));
-        completionText.setBounds(100, 60, 400, 500);
+        completionText.setBounds(100, 60, 330, 500);
         panel.add(completionText);
 
         // Adds the receipt on the right of the screen
         JPanel receipt = createReceiptPanel();
         receipt.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        receipt.setBounds(560, 170, 380, 400);
+        receipt.setBounds(560, 170, 350, 400);
         panel.add(receipt);
 
         // Adds the exit button to exit back to the customer home
@@ -2684,16 +2741,17 @@ public class Frame extends JFrame{
         panel.add(redPanel);
 
 
-        completionText.setText("<html>Your order is complete!</br>It will be ready for pickup in</br>20minutes!</html>");
+        JLabel completionText = new JLabel("<html>Your order is complete!</br> It will be ready for pickup in</br> 10 minutes!</html>");
         completionText.setFont(new Font("Arial", Font.PLAIN, 30));
-        completionText.setBounds(100, 60, 400, 500);
+        completionText.setBounds(100, 60, 330, 500);
         panel.add(completionText);
 
         // Adds the receipt on the right of the screen
         JPanel receipt = createReceiptPanel();
         receipt.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        receipt.setBounds(560, 170, 380, 400);
+        receipt.setBounds(560, 170, 350, 400);
         panel.add(receipt);
+
 
         // Adds the exit button to exit back to the customer home
         JButton exitButton = new JButton("Exit");
@@ -2721,7 +2779,7 @@ public class Frame extends JFrame{
         panel.add(redPanel);
 
         // Adds the text on the left of the screen
-        completionText.setText("<html>Your order is complete!</br> It will be ready in</br> 10minutes!</html>");
+        JLabel completionText = new JLabel("<html>Your order is complete!</br> It will be ready in</br> 10 minutes!</html>");
         completionText.setFont(new Font("Arial", Font.PLAIN, 30));
         completionText.setBounds(100, 60, 330, 500);
         panel.add(completionText);
@@ -2730,9 +2788,6 @@ public class Frame extends JFrame{
         JPanel receipt = createReceiptPanel();
         receipt.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         receipt.setBounds(560, 170, 350, 400);
-        for(Item item : cart) {
-            receiptPanel.addItem(item.toString(), item.getPrice());
-        }
         panel.add(receipt);
 
         // Adds the exit button to exit back to the customer home
